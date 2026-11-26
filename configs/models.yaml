@@ -1,17 +1,19 @@
-# Model endpoints. PROPOSED FINKI-only line-up, pending confirmation (see docs/requests/finki-gpu-request.md).
+# Model endpoints. PROPOSED FINKI-only line-up, NOT CONFIRMED (see docs/requests/finki-gpu-request.md).
+# Every model runs as its own server on a FINKI GPU and is reached over HTTP on the node (localhost ports).
 # base_url_env names an environment variable (set in .env or the SLURM job); base_url is the fallback.
+
 models:
-  qwen3.8-27b:
+  # Phase 1: negotiators
+  qwen3.8-27b:                       # main negotiator; also the second judge on the 150 human-labelled messages
     kind: openai_compat
     served_name: Qwen/Qwen3.8-27B
     base_url_env: NEGOTIATOR_BASE_URL
     base_url: http://localhost:8000/v1
-    # model card's non-thinking settings; thinking switched off
-    sampling: {top_p: 0.8, top_k: 20, min_p: 0.0, presence_penalty: 1.5}
+    sampling: {top_p: 0.8, top_k: 20, min_p: 0.0, presence_penalty: 1.5}   # model card, non-thinking mode
     extra_body: {chat_template_kwargs: {enable_thinking: false}}
     max_tokens: 1024
 
-  gemma-4-31b:
+  gemma-4-31b:                       # second negotiator; also the translation-error judge (phase 2)
     kind: openai_compat
     served_name: google/gemma-4-31B-it
     base_url_env: NEGOTIATOR2_BASE_URL
@@ -19,14 +21,26 @@ models:
     extra_body: {chat_template_kwargs: {enable_thinking: false}}
     max_tokens: 1024
 
-  # CIIT-style local serving through Ollama also works (OpenAI-compatible endpoint):
-  ollama-qwen3-32b:
+  # Local serving through Ollama also works (same OpenAI-compatible API), e.g. for a laptop smoke test:
+  ollama-small:
     kind: openai_compat
-    served_name: qwen3:32b
+    served_name: qwen3:1.7b
     base_url: http://localhost:11434/v1
     max_tokens: 1024
 
 translators:
-  identity: {kind: identity}
-  nllb-200-3.3b: {kind: nllb_service, base_url_env: NLLB_BASE_URL, base_url: http://localhost:8003}
-  hy-mt2-7b: {kind: openai_mt, served_name: tencent/Hy-MT2-7B, base_url_env: MT2_BASE_URL, base_url: http://localhost:8002/v1}
+  identity: {kind: identity}                     # A/A test: channel present, changes nothing
+  nllb-200-3.3b:                                 # MT1: classic open translation model
+    kind: nllb_service
+    base_url_env: NLLB_BASE_URL
+    base_url: http://localhost:8003
+  hy-mt2-7b:                                     # MT2: LLM-based translation model
+    kind: openai_mt
+    served_name: tencent/Hy-MT2-7B
+    base_url_env: MT2_BASE_URL
+    base_url: http://localhost:8002/v1
+  translategemma-27b:                            # phase 2 only: back-translation for the error analysis
+    kind: translategemma
+    served_name: google/translategemma-27b-it
+    base_url_env: BACKTRANSLATE_BASE_URL
+    base_url: http://localhost:8004/v1

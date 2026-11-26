@@ -56,3 +56,9 @@ def test_full_run_with_real_templates(builder, scenario, cells):
     llms = {r: FakeNegotiator(scenario.issue_ids, "en", scenario.nash_point().deal) for r in scenario.roles}
     res = run_negotiation(spec, scenario, llms, builder, {"m1": TaggingTranslator("m1"), "m2": TaggingTranslator("m2")})
     assert res.outcome.status == "deal"
+
+
+def test_confirmation_turn_after_limit(builder):
+    spec = AgentSpec(role="aldoria", persona="dove", instr_lang="en", dialog_lang="en", model="x")
+    text = builder.turn_message(spec, 11, 10, "We accept.", [])
+    assert "used all 10 messages" in text and "Message 11 of 10" not in text

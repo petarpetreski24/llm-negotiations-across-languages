@@ -1,4 +1,4 @@
-"""Client for OpenAI-compatible chat servers: vLLM on the FINKI GPUs, or Ollama as in the CIIT paper.
+"""Client for OpenAI-compatible chat servers: vLLM on the FINKI GPUs, or Ollama for local tests.
 
 Structured output is requested with `response_format` (JSON schema), which vLLM enforces
 with guided decoding. Model-specific switches (e.g. Qwen's `chat_template_kwargs:

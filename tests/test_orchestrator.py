@@ -100,3 +100,22 @@ def test_agent_failure_ends_run_as_error(scenario, cells):
     llms = {"aldoria": ScriptedLLM(["bad", "bad", "bad"]), "veskaria": ScriptedLLM([])}
     res = run_negotiation(spec, scenario, llms, PlainPromptBuilder(), translators())
     assert res.outcome.status == "error" and "aldoria" in res.outcome.error
+
+
+def test_logs_are_self_contained(scenario, cells, tmp_path):
+    spec = spec_for(cells, "A1")
+    res = run_negotiation(spec, scenario, fakes(scenario, spec), PlainPromptBuilder(), translators(), log_dir=tmp_path)
+    head, turns, _ = read_run(res.path)
+    assert set(head["meta"]["system_prompts"]) == {"aldoria", "veskaria"}
+    assert "You open the negotiation" in turns[0].turn_message
+    assert "<<<" in turns[1].turn_message  # the delivered message the agent actually saw
+
+
+def test_deal_below_batna_is_flagged_without_nash_product(scenario, cells):
+    spec = spec_for(cells, "A1")
+    best_for_aldoria = {i.id: max(range(5), key=lambda k: i.points["aldoria"][k]) for i in scenario.issues}
+    llms = {r: FakeNegotiator(scenario.issue_ids, "en", best_for_aldoria) for r in scenario.roles}
+    res = run_negotiation(spec, scenario, llms, PlainPromptBuilder(), translators())
+    assert res.outcome.status == "deal"
+    assert res.outcome.utility["aldoria"] == 100 and res.outcome.below_batna == ["veskaria"]
+    assert res.outcome.nash_product is None

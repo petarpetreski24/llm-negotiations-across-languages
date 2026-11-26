@@ -1,4 +1,8 @@
+{% if round_no > max_rounds %}
+Your delegation has used all {{ max_rounds }} messages. The other delegation has just accepted terms: you may conclude the deal by accepting the same terms; otherwise the talks end without a deal.
+{% else %}
 Message {{ round_no }} of {{ max_rounds }} for your delegation.
+{% endif %}
 {% if excerpts %}
 Relevant excerpts from your briefing book:
 {% for e in excerpts %}

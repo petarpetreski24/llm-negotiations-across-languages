@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -72,7 +73,8 @@ def run_negotiation(
             TurnRecord(
                 run_id=spec.run_id, turn=proto.turns, round=proto.rounds, speaker=speaker,
                 model=agent.spec.model, instr_lang=agent.spec.instr_lang, dialog_lang=agent.spec.dialog_lang,
-                retrieved=turn.retrieved, prompt_sha=turn.prompt_sha, raw=turn.raw, output=out,
+                retrieved=turn.retrieved, prompt_sha=turn.prompt_sha, turn_message=turn.turn_message,
+                raw=turn.raw, output=out,
                 lang_detected=turn.lang_detected, retries=turn.retries, usage=turn.usage, ms=turn.ms,
                 comprehension=comprehension, channel=chan,
             )
@@ -81,7 +83,8 @@ def run_negotiation(
     outcome = score_outcome(spec.run_id, proto, scenario)
     result = RunResult(spec, records, outcome)
     if log_dir is not None:
-        result.path = write_run(log_path(log_dir, spec.run_id), spec, records, outcome, meta={"git": _git_rev()})
+        meta = {"git": _git_rev(), "system_prompts": {r: agents[r].system for r in roles}}
+        result.path = write_run(log_path(log_dir, spec.run_id), spec, records, outcome, meta=meta)
     return result
 
 
@@ -101,10 +104,13 @@ def score_outcome(run_id: str, proto: Protocol, scenario: Scenario) -> Outcome:
     if proto.state == State.DEAL:
         terms = next(t for t in proto.terms.values() if t is not None)
         util = scenario.utilities(terms)
-        product = 1.0
-        for r in util:
-            product *= util[r] - batna[r]
-        return Outcome(**base, utility=util, joint=sum(util.values()),
+        below = [r for r in util if util[r] < batna[r]]
+        product = None
+        if not below:  # the Nash product is only meaningful when both sides gain over walking away
+            product = 1.0
+            for r in util:
+                product *= util[r] - batna[r]
+        return Outcome(**base, utility=util, joint=sum(util.values()), below_batna=below,
                        pareto_distance=scenario.pareto_distance(terms), nash_product=product)
 
     believed = None
@@ -113,7 +119,8 @@ def score_outcome(run_id: str, proto: Protocol, scenario: Scenario) -> Outcome:
     return Outcome(**base, utility=dict(batna), believed_utility=believed, joint=sum(batna.values()))
 
 
-def _git_rev() -> str:
+@functools.lru_cache(maxsize=1)
+def _git_rev() -> str:  # computed once per process, not once per run
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
                               timeout=5).stdout.strip()

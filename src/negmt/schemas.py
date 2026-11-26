@@ -85,6 +85,7 @@ class TurnRecord(BaseModel):
     dialog_lang: str
     retrieved: list[str] = Field(default_factory=list)
     prompt_sha: str
+    turn_message: str = ""  # the user message sent this turn (excerpts + incoming); system prompts are in the log header
     raw: str
     output: AgentOutput
     lang_detected: str
@@ -106,7 +107,8 @@ class Outcome(BaseModel):
     believed_utility: Optional[dict[str, float]] = None  # for illusory agreements
     joint: float
     pareto_distance: Optional[float] = None
-    nash_product: Optional[float] = None
+    nash_product: Optional[float] = None  # only for deals that beat both BATNAs
+    below_batna: list[str] = Field(default_factory=list)  # roles that accepted a deal worse than walking away
     error: Optional[str] = None
 
 

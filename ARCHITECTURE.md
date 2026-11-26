@@ -1,94 +1,155 @@
-# Architecture: what we will build
+# Architecture: what we will build (v2: open models on FINKI GPUs)
 
-This is the companion to [PLAN.md](PLAN.md), which covers the study design and budget. This file covers the software: components, data formats, the negotiation protocol, where each part runs, how we test it, and the order we build it in. Draft v1, 25 Nov 2026.
+This is the companion to [PLAN.md](PLAN.md), which covers the study design. This file covers the software: components, how they communicate, where they run, what space they use, how they are set up, data formats, the protocol, tests and the build order.
+
+> **The model choices are PROPOSED, NOT CONFIRMED** until FINKI answers the GPU request and the pilot (3–4 Dec) has run. The software does not depend on them: any model served through an OpenAI-compatible API can be swapped in by editing `configs/models.yaml`.
 
 ## 1. In one paragraph
 
-We are building a **research pipeline**, not an app. A Python program (the *runner*) plays thousands of negotiations between two LLM agents. Each agent has a role, a persona, a private score table and a private briefing it searches each turn. Every message goes through a pluggable **translation channel** that either passes it through, translates it with one of two MT systems, or round-trips it. Everything is logged as JSONL. A second set of scripts (the *analysis*) turns the logs into negotiation metrics and a translation-error analysis, then into the tables and figures for the paper. There is no UI, no mediator agent and no fine-tuning; it runs from the command line.
+We are building a **research pipeline**, not an app. A Python program (the *runner*) plays about 2,000 negotiations between two LLM agents. Each agent has a role, a persona, a private score table and a private briefing it searches each turn. Every message goes through a pluggable **translation channel**, which either passes it on, translates it with one of two MT systems, or round-trips it. Everything is logged to files. A second set of scripts (the *analysis*) turns the logs into negotiation metrics and a translation-error analysis, then into the tables and figures for the paper. There is no UI and no fine-tuning; everything runs from the command line.
 
 ## 2. Components
 
-| # | Component | What it does | Where it runs |
+| # | Component | What it does | Status |
 |---|---|---|---|
-| 1 | **Scenario and scoring** | Issues, options with EN and RU labels, each side's points and BATNA; computes the utility of any deal, the Pareto frontier and the Nash point | runner and analysis |
-| 2 | **Prompt builder** | Renders each agent's system prompt in its *instruction language* from layers: situation, persona, score table, rules | runner |
-| 3 | **Retriever (RAG)** | Per-role briefing corpus in the agent's instruction language; returns the top 3 chunks per turn, with chunk IDs shared across EN and RU | runner (CPU) |
-| 4 | **Agent** | Builds the turn context, calls its model, validates the JSON and the message language, and retries if needed | runner |
-| 5 | **LLM clients** | One interface with two adapters: OpenAI-compatible (vLLM on FINKI, or Ollama as in the CIIT paper) and the Anthropic SDK (Claude) | runner |
-| 6 | **Translation channel** | Decides per message whether to translate, in which direction and with which system; logs every translation | runner, calling MT services |
-| 7 | **MT adapters** | `identity`, `nllb` (NLLB-200 3.3B), `translategemma` (TranslateGemma 27B via vLLM), `roundtrip(inner)`, plus `fake` for tests | FINKI GPU |
-| 8 | **Protocol engine** | Turn order, accept/confirm rules, termination: deal, illusory agreement, walk-away, timeout or error | runner |
-| 9 | **Runner** | Expands the experiment grid, runs ~32 negotiations concurrently, resumes after crashes, caches responses, enforces the budget | FINKI node, front node or laptop |
-| 10 | **Logger** | One JSONL file per negotiation, containing every prompt, retrieval, response, translation, token count and cost | runner |
-| 11 | **Analysis** | Outcome metrics, concession and comprehension metrics, the translation-error pipeline (back-translation, QE, LLM judge, human check), statistics and figures | laptop, plus the Anthropic Batch API |
+| 1 | **Scenario and scoring** (`scenario.py`, `ostra.yaml`) | Issues, options with EN/RU labels, points, BATNAs; utility of any deal, Pareto frontier, Nash point | done |
+| 2 | **Cells** (`cells.py`, `cells.yaml`) | The 12 experimental conditions and the 2 persona pairings → one run spec per negotiation | done |
+| 3 | **Prompt builder** (`prompts.py`, `configs/prompts`) | Renders each agent's prompts in its *instruction language* from layers: situation, persona, score table, rules | EN done, RU next |
+| 4 | **Retriever** (`rag.py`, `corpus.py`) | Splits the briefing books into sections; returns the 3 most relevant per turn | loader done; search next |
+| 5 | **Agent** (`agent.py`) | Builds the turn context, calls its model, checks the reply (format, options, language), retries | done |
+| 6 | **Model client** (`llm/openai_compat.py`) | Talks to any OpenAI-compatible server (vLLM on FINKI, Ollama for local tests) | done |
+| 7 | **Translation channel** (`channel.py`, `translation/`) | Decides per message whether and how to translate, and logs it | done; NLLB and Hy-MT2 adapters next |
+| 8 | **Protocol** (`protocol.py`) | Turn order, accept/confirm rules, end of the talks | done |
+| 9 | **Orchestrator** (`orchestrator.py`) | Plays one negotiation end to end and scores it | done |
+| 10 | **Runner** (`runner.py`), **cache** (`cache.py`) | Runs the whole grid in parallel, resumes after crashes, stores every model reply | done |
+| 11 | **Analysis** (`analysis/`) | Outcome metrics; back-translation, quality scores, LLM judge, human check; statistics and figures | Dec 5–9 |
+| 12 | **Infrastructure** (`infra/`) | Container recipe, SLURM job scripts, NLLB service, SSH tunnel | Nov 30 – Dec 2 |
 
-## 3. Repository layout
+## 3. How the pieces talk to each other (plain language)
+
+**The short version.** Every model runs as its own small web server on the GPU node. The runner, a normal Python program, sends it a question as an HTTP request and gets the answer back. The agents never talk to each other directly. Every message goes through the runner, which also decides whether it gets translated.
+
+**Who holds what.**
+- **A model server** (for example vLLM serving Qwen3.8-27B on GPU 0) holds only the model weights. It has no memory of earlier requests. Each request contains everything the model needs: the system prompt, the conversation so far as that agent saw it, and this turn's briefing excerpts. That is why one server can play *both* sides of a negotiation, and many negotiations at once, without mixing them up.
+- **The runner** holds the agents. An "agent" is just a Python object: its persona, its score table, its conversation history and its language settings. The runner also holds the protocol state (whose turn it is, whether someone has accepted) and writes the log.
+- **The translation servers** (NLLB and Hy-MT2) only translate. They receive text, a source language and a target language, and return the translation.
+
+**What happens to one message**, here Aldoria (English) writing to Veskaria (Russian) in cell B3:
+1. The runner asks the retriever for Aldoria's 3 most relevant briefing sections. This is a fast in-memory search on the CPU.
+2. The runner sends the Qwen server Aldoria's system prompt, history and excerpts (`POST http://localhost:8000/v1/chat/completions`) and asks for a reply in a fixed JSON format.
+3. The reply comes back with a public `message` and private fields (the offer, what Aldoria thinks Veskaria offered, accept or not). The runner checks it and retries if it is broken.
+4. The runner sends only the `message` to the Hy-MT2 server (`localhost:8002`): "translate from English to Russian".
+5. The Russian text is added to Veskaria's history. On Veskaria's turn, the same steps run in the other direction.
+6. After every turn, the runner appends a record to the log: what was sent, what came back, the translation, timings and token counts.
+
+**Many negotiations at once.** The runner plays about 32 negotiations in parallel threads. Each one waits for its own replies, while the vLLM servers batch the requests together on the GPU. That batching is what makes 2,000 negotiations take hours rather than weeks.
+
+**Outside the node.** During the runs, nothing leaves the GPU node: no internet and no external AI service. The internet is needed only once, before the runs, to download the model weights. After the runs, the log files are copied to a laptop for analysis, or analysed on the cluster.
+
+**The analysis phase** works the same way. The judge (Gemma 4 31B) and the back-translator (TranslateGemma 27B) are servers too. The analysis scripts send them every translated message in large parallel batches.
+
+## 4. Where things run and what space they use
+
+**Phase 1: negotiations.** One SLURM job on one node with 4 GPUs:
+
+| GPU | Server (port) | Model | GPU memory |
+|---|---|---|---|
+| 0 | vLLM (8000) | Qwen3.8-27B, negotiator 1 | ~56 GB weights + working memory for parallel conversations |
+| 1 | vLLM (8001) | Gemma 4 31B, negotiator 2 | ~62 GB weights + working memory |
+| 2 | vLLM (8002) and NLLB service (8003) | Hy-MT2-7B and NLLB-200 3.3B | ~16 GB + ~7 GB |
+| 3 | spare | second copy of a negotiator, or headroom | — |
+
+**Phase 2: analysis.** The same node, a later job:
+
+| GPU | Server (port) | Model |
+|---|---|---|
+| 0–1 | vLLM (8001) | Gemma 4 31B as error judge (split over 2 GPUs for speed) |
+| 2 | vLLM (8004) | TranslateGemma 27B for back-translation |
+| 3 | vLLM (8000) and in-process scorer | Qwen3.8-27B as second judge (150 messages); CometKiwi |
+
+**GPU memory is the tight part.** Each conversation in progress needs working memory on the GPU (the "KV cache", about 1–2 GB for a long conversation with a 27–31B model). With BF16 weights, a 27–31B model leaves only 15–20 GB of an 80 GB A100 for this, so only a handful of negotiations fit at once. Two fixes, which the pilot will choose between:
+- store the weights in FP8, which halves them; the A100 supports this through vLLM's weight-only kernels, with a very small quality loss;
+- spread one model over two GPUs.
+
+**Disk (project storage on the cluster):**
+
+| What | Size |
+|---|---|
+| Model weights (Qwen 56, Gemma 4 62, TranslateGemma 55, Hy-MT2 16, NLLB 18, BGE-M3 and CometKiwi ~5) | ~210 GB |
+| vLLM container image + a Python environment | ~20 GB |
+| Run logs (~150 KB per negotiation × ~2,100) | ~0.3 GB |
+| Response cache, analysis tables, figures | ~1–2 GB |
+| **Total** | **~234 GB** (request 300 GB) |
+
+- **CPU and RAM:** the runner, the retriever and the statistics are light, needing a few CPU cores and a few GB of RAM. The node has 48 cores and 1 TB of RAM.
+- **Your laptop:** the code, tests and fake runs (the repo is a few MB; the virtual environment is about 0.3 GB). Later it also runs the analysis of the copied logs. NLLB-distilled-600M (~2.5 GB) can run on its CPU for local translation tests. No GPU is needed.
+
+## 5. Is there a database? No, and here is why
+
+Everything is stored as **plain files** in the project folder:
+
+| What | Format | Why |
+|---|---|---|
+| One negotiation | `logs/<experiment>/<run-id>.jsonl`: one JSON line for the run settings (incl. both system prompts and the git version), one per turn, one for the outcome | Append-only, human-readable, easy to copy and archive; a file exists only when the run finished, which is what makes resuming safe |
+| Model replies | `cache/<hash>.json`, one file per request | Re-running or re-analysing never calls a model twice |
+| Analysis tables | Parquet/CSV in `results/` | Fast to load with pandas |
+| Human labels | a spreadsheet (CSV/XLSX) exported for the reviewer and imported back | Easy for a non-programmer |
+
+Why no database server:
+- the data is small (well under 1 GB);
+- it is written once and only read afterwards;
+- a cluster job is not a good place to run a database service;
+- files are trivial to version, copy, zip for the public release, and inspect by hand.
+
+If we ever want SQL, **DuckDB** (a Python library with no server) can query the JSONL and Parquet files directly.
+
+## 6. How it is set up, step by step
+
+1. **Access (you and the supervisor).** OSC lab approval, an eduGAIN login, your SSH key added to the portal, and eduVPN installed on your laptop. You can then log in with `ssh <user>@<front node>`.
+2. **Hugging Face (you).** A free account and a token. Accept the licences for TranslateGemma and CometKiwi; the token goes in `.env` on the cluster, never in git.
+3. **Code.** On the front node, `git clone` the repository into the project folder and create the Python environment for the runner (or use the container from step 5).
+4. **Model weights.** Download them once with `huggingface-cli download …` into `models/`, about 210 GB. If the GPU nodes have no internet, download on the front node; all nodes see the same storage.
+5. **Container.** `apptainer pull` the official vLLM image, or build it on the laptop with Docker and upload it if the cluster can't pull. The same image serves every model.
+6. **Test job.** `sbatch infra/slurm/serve_models.sbatch smoke` does the following:
+   - starts the servers on their GPUs and waits until each answers its health check;
+   - runs one negotiation per cell;
+   - stops.
+7. **Pilot and main jobs.** The same job script with `pilot`, then `main`. The runner runs inside the job next to the servers, so everything stays on `localhost`. If a job is killed or hits its time limit, resubmitting it continues where it stopped, because finished runs are skipped.
+8. **Results.**
+   - Logs are written to `logs/` in the project folder; we copy them to the laptop with `rsync` over eduVPN.
+   - Raw logs are **not** committed to GitHub. Code, configs and summary tables are.
+   - The full logs are published as a zipped release (Zenodo DOI) with the paper.
+
+## 7. Repository layout
 
 ```
-lost-in-translation/
-├── PLAN.md · ARCHITECTURE.md · README.md · .env.example (never commit .env)
+llm-negotiations-across-languages/
+├── PLAN.md · ARCHITECTURE.md · CHECKLIST.md · README.md · .env.example (never commit .env)
 ├── configs/
 │   ├── scenario/ostra.yaml            issues, options (EN/RU labels), points, BATNAs
-│   ├── cells.yaml                     A1–A4, B1–B3, C1–C2: languages per agent + channel
+│   ├── cells.yaml                     A1–A4, B1–B3, C1–C2 + persona pairings
+│   ├── roles/{aldoria,veskaria}.{en,ru}.md      country briefs (system prompt layer)
 │   ├── personas/{hawk,dove}.{en,ru}.md
-│   ├── roles/{aldoria,veskaria}.{en,ru}.md   situation brief per country (system prompt layer)
-│   ├── prompts/{system,turn}.{en,ru}.j2   Jinja2 templates per instruction language
-│   ├── corpora/{aldoria,veskaria}/{en,ru}/*.md   RAG briefings, parallel files
-│   ├── models.yaml                    endpoints, served names, settings, prices
-│   └── experiments/{pilot,main,replication}.yaml
+│   ├── prompts/{system,turn,retry}.{en,ru}.j2 · languages.yaml
+│   ├── corpora/{aldoria,veskaria}/{en,ru}/*.md  briefing books (parallel files)
+│   ├── models.yaml                    model servers and translators (proposed, not confirmed)
+│   └── experiments/{pilot,aa-test,main}.yaml
 ├── src/negmt/
-│   ├── scenario.py   cells.py   schemas.py   prompts.py   rag.py   agent.py   protocol.py
-│   ├── orchestrator.py   channel.py   runner.py   budget.py   cache.py   langcheck.py   logio.py
-│   ├── llm/          base.py · openai_compat.py · anthropic_client.py · fake.py
-│   └── translation/  base.py · identity.py · nllb.py · translategemma.py · roundtrip.py · fake.py
-├── analysis/
-│   ├── metrics.py    stats.py    figures.py
-│   └── translation_eval/  extract.py · backtranslate.py · autoscores.py · judge.py · human.py · agreement.py
-├── infra/
-│   ├── vllm.sif (built, not committed) · mt_service.py (FastAPI around NLLB)
-│   ├── slurm/serve_models.sbatch · slurm/run_grid.sbatch
-│   └── tunnel.sh                      SSH port-forward from runner to GPU node
-├── planning/   cost_model.py · scenario_check.py
-├── tests/      unit tests + end-to-end tests with fake LLM and fake translator
-└── paper/      MIPRO LaTeX template · sections/ · figures/ · tables/
+│   ├── scenario.py  cells.py  schemas.py  prompts.py  corpus.py  rag.py  agent.py
+│   ├── protocol.py  orchestrator.py  channel.py  runner.py  cache.py  langcheck.py  logio.py
+│   ├── llm/          base.py · openai_compat.py · fake.py
+│   └── translation/  base.py · identity.py · roundtrip.py · nllb.py · openai_mt.py · fake.py
+├── analysis/   metrics.py · stats.py · figures.py · translation_eval/
+├── infra/      mt_service.py (NLLB) · slurm/serve_models.sbatch · tunnel.sh
+├── docs/       requests/ (FINKI request) · russian-review/ (guide for the Russian reviewer)
+├── planning/   scenario_check.py · compute_model.py
+├── tests/      unit tests + end-to-end tests with fake models and translators
+└── paper/      MIPRO LaTeX template · figures/ · tables/
 ```
 
-Estimated size: about 1.5–2k lines of Python, plus configs, materials and tests.
+## 8. Data formats
 
-## 4. Data formats
-
-### 4.1 Scenario (`configs/scenario/ostra.yaml`, excerpt)
-
-```yaml
-id: ostra-v1
-roles:
-  aldoria:  {batna: 45}
-  veskaria: {batna: 45}
-issues:
-  - id: filling
-    label: {en: "Reservoir filling period", ru: "Срок заполнения водохранилища"}
-    options:
-      - {id: 0, label: {en: "3 years",  ru: "3 года"}}
-      - {id: 1, label: {en: "5 years",  ru: "5 лет"}}
-      - {id: 2, label: {en: "7 years",  ru: "7 лет"}}
-      - {id: 3, label: {en: "10 years", ru: "10 лет"}}
-      - {id: 4, label: {en: "15 years", ru: "15 лет"}}
-    points: {aldoria: [25, 19, 13, 7, 0], veskaria: [0, 4, 8, 12, 15]}
-  # release, compensation, electricity, monitoring, communique …
-```
-
-A native speaker fixes the Russian option labels, so the agents' option lists are equivalent. MT is never applied to these labels; it only touches the messages agents write.
-
-### 4.2 Cells (`configs/cells.yaml`, excerpt)
-
-```yaml
-A1: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode: none}}
-A3: {agents: [{instr: en, dialog: ru}, {instr: en, dialog: ru}], channel: {mode: none}}
-B2: {agents: [{instr: en, dialog: en}, {instr: ru, dialog: ru}], channel: {mode: mt, system: MT1}, swap_roles: true}
-C1: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode: roundtrip, system: MT1, pivot: ru}}
-```
-
-### 4.3 Agent output per turn (enforced with a JSON schema)
+### 8.1 Agent output per turn (enforced with a JSON schema)
 
 ```json
 {
@@ -102,46 +163,48 @@ C1: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode:
 ```
 
 Validation rules:
-- every issue is present in `my_offer`, with valid option IDs;
+- every issue is present in `my_offer`, with valid option numbers;
 - `accepted_terms` is required exactly when `decision` is `accept`;
 - the language of `message` must match the agent's dialogue language.
 
-On failure, the agent is re-asked with the error, at most twice. After that the run is marked `error`, and error runs are counted and reported.
+On failure, the agent is re-asked with the error, at most twice. After that the run is marked `error`. Option numbers are language-neutral and the other side never sees them, which is how we measure comprehension.
 
-JSON keys and option IDs are language-neutral; only `message` (and `plan`) are natural language. That is how we measure comprehension: the counterpart only ever sees `message`, but we can compare its `their_offer_as_understood` with the true `my_offer`.
+### 8.2 Log file (`logs/<experiment>/<run-id>.jsonl`)
 
-### 4.4 Turn log record (one line per turn in `logs/<run_id>.jsonl`)
+- **First line:** the run spec (cell, persona pairing, seed, first mover, languages, model, channel) plus `meta` with the git version and both agents' full system prompts.
+- **One line per turn:**
+
+  ```json
+  {"type": "turn", "run_id": "main/qwen3.8-27b/B3-swap/P2/017", "turn": 7, "round": 4, "speaker": "veskaria",
+   "model": "qwen3.8-27b", "instr_lang": "ru", "dialog_lang": "ru", "retrieved": ["veskaria/02-hydrology-study#c1"],
+   "prompt_sha": "…", "turn_message": "…what the agent was shown this turn…", "raw": "…", "output": {…},
+   "lang_detected": "ru", "retries": 0, "usage": {"input_tokens": 6120, "output_tokens": 402}, "ms": 2140,
+   "comprehension": {"correct": 5, "wrong": 1, "missing": 0},
+   "channel": {"mode": "mt", "system": "hy-mt2-7b", "src": "ru", "tgt": "en",
+               "source_text": "…", "delivered_text": "…", "pivot_text": null, "ms": 840}}
+  ```
+
+- **Last line, the outcome:**
+
+  ```json
+  {"type": "outcome", "status": "deal | illusory | walk_away | timeout | error", "turns": 7, "rounds": 4,
+   "terms": {"aldoria": {…}, "veskaria": {…}}, "utility": {"aldoria": 68, "veskaria": 72}, "joint": 140,
+   "pareto_distance": 0, "nash_product": 621, "below_batna": []}
+  ```
+
+  `nash_product` is filled only when both sides beat their BATNA. `below_batna` lists any side that accepted a deal worse than walking away. Illusory agreements, walk-aways and timeouts pay each side its BATNA; for illusory agreements we also record the two believed deals.
+
+### 8.3 Judge output (one per translated message)
 
 ```json
-{"run_id": "main/qwen/B2-swap/P2/017", "turn": 7, "round": 4, "speaker": "veskaria",
- "model": "qwen3.8-27b", "instr_lang": "ru", "dialog_lang": "ru",
- "retrieved": ["ves-hydro-02#c3", "ves-law-01#c1", "ves-press-04#c2"],
- "prompt_sha": "…", "prompt": "…(compressed)…", "raw": "…", "output": {…},
- "lang_detected": "ru", "retries": 0, "usage": {"in": 6120, "out": 402, "usd": 0.0}, "ms": 2140,
- "channel": {"mode": "mt", "system": "nllb-200-3.3b", "src": "ru", "tgt": "en",
-             "source_text": "…", "delivered_text": "…", "pivot_text": null, "ms": 840}}
-```
-
-The first line of each file is the full run spec: cell, persona pairing, seed, first mover, model settings, git commit and config hashes. The last line is the outcome:
-
-```json
-{"status": "deal | illusory | walk_away | timeout | error", "rounds": 7,
- "terms": {"aldoria": {…}, "veskaria": {…}}, "utility": {"aldoria": 68, "veskaria": 72},
- "joint": 140, "pareto_distance": 0, "nash_product": 621}
-```
-
-### 4.5 Judge output (translation-error analysis, one per translated message)
-
-```json
-{"errors": [{"category": "semantic | pragmatic | cultural",
-             "type": "number | omission | addition | negation | entity | term | condition | commitment | stance | speech_act | formality | hedge | idiom | formula | reference | register",
+{"errors": [{"category": "semantic | pragmatic | cultural", "type": "number | omission | … | register",
              "severity": "minor | major | critical", "offer_relevant": true,
              "span_source": "…", "span_translation": "…", "note": "…"}],
- "tone": {"source":      {"assertiveness": 4, "politeness": 2, "commitment": 5},
+ "tone": {"source": {"assertiveness": 4, "politeness": 2, "commitment": 5},
           "translation": {"assertiveness": 3, "politeness": 3, "commitment": 4}}}
 ```
 
-## 5. The negotiation protocol
+## 9. The negotiation protocol
 
 ```
 OPEN ──X: continue (counter-offer)──▶ OPEN  (other side's turn)
@@ -151,171 +214,103 @@ OPEN ──X: accept(T_x)──▶ PENDING(T_x) ──Y: accept(T_y), T_y == T_x
 any state ──walk_away──▶ WALK_AWAY      after 2×10 messages ──▶ TIMEOUT      unrecoverable failure ──▶ ERROR
 ```
 
-- **Turns:** agents alternate, 10 each. The first mover alternates by run index.
-- **Payoffs:** DEAL pays the utility of the terms. ILLUSORY, WALK_AWAY and TIMEOUT pay each side its BATNA, and for ILLUSORY we also record the two believed deals.
-- **Knowledge:** agents know the round limit, their own scores and their own briefing. They do **not** know the other side's scores, and they are never told that messages are translated.
+- Agents alternate, 10 messages each, and the first mover alternates by run.
+- An acceptance on the last message gets one extra reply; the prompt tells that agent the limit has been reached.
+- Agents know the message limit, their own scores and their own briefing. They do not know the other side's scores, and they are never told that messages are translated.
 
-## 6. Inside one turn
-
-1. **Who speaks.** The orchestrator picks speaker X in round r.
-2. **What X sees.** X's history contains its own messages as written and the other side's messages as delivered, meaning after the channel, in X's dialogue language.
-3. **Retrieve.** The query is the latest incoming message plus X's last plan, embedded with BGE-M3. X gets the top 3 chunks from its own corpus, in its instruction language, and the chunk IDs are logged.
-4. **Prompt.** The system prompt is written in the instruction language: situation, persona, score table with BATNA, and rules, including "write `message` in <dialogue language>" and "don't reveal exact point values". It is followed by the retrieved excerpts and the history, then a turn note ("round r of 10").
-5. **Call the model.** Structured output is forced by the JSON schema. Thinking/reasoning is off.
-6. **Validate.** Check the schema, the option IDs and the message language, and retry up to 2 times.
-7. **Channel.** If the receiver's dialogue language differs, translate with the cell's MT system. In C cells, round-trip through Russian. Otherwise pass the message through unchanged. Every case is logged.
-8. **Deliver and update.** Append the delivered text to Y's history, update the protocol state, and write the turn record.
-
-Example from cell B2 (NLLB):
-- **Aldoria (English) writes:** "We can guarantee 40 bcm in drought years if Veskaria drops the cash compensation." Its private `my_offer` holds `release: 3` and `compensation: 0`.
-- **The channel translates EN→RU:** «Мы можем гарантировать 40 млрд м³ в засушливые годы, если Вескария откажется от денежной компенсации.»
-- **Veskaria's agent reads only that Russian text.** It searches its Russian hydrology brief, replies in Russian, and records `their_offer_as_understood`.
-- **Afterwards we check:** did it understand `release: 3, compensation: 0`? And did the judge find any errors in the translation?
-
-## 7. Translation channel and MT systems
+## 10. Translation channel and MT systems
 
 | Cell type | Sender → receiver dialogue | Channel action |
 |---|---|---|
-| A1–A4, B1 | same language | pass through (we assert the languages really are equal) |
-| B2 / B3 | EN ↔ RU | translate with MT1 (NLLB) / MT2 (TranslateGemma) |
+| A1–A4, B1 | same language | pass through (we check the languages really are equal) |
+| B2 / B3 | EN ↔ RU | translate with MT1 (NLLB) / MT2 (Hy-MT2) |
 | C1 / C2 | EN → EN | EN→RU→EN round trip with MT1 / MT2 |
 
 Every adapter implements `translate(text, src, tgt) -> TranslationResult{text, system, ms, meta}`:
-
-- **NLLB-200 3.3B** (`facebook/nllb-200-3.3B`, CC-BY-NC):
-  - translates sentence by sentence (split with `razdel` for Russian and `pysbd` for English), using language codes `eng_Latn` / `rus_Cyrl`;
-  - is served by `infra/mt_service.py`, a small FastAPI app on the GPU that batches requests.
-- **TranslateGemma 27B:**
-  - served by vLLM, using the prompt format from its model card (exact Hugging Face ID and template still to be checked);
-  - always receives one whole message, with no extra context.
+- **NLLB-200 3.3B:**
+  - runs behind `infra/mt_service.py`, a small web service on the GPU;
+  - translates sentence by sentence (split with `razdel` for Russian and `pysbd` for English), using language codes `eng_Latn` / `rus_Cyrl`.
+- **Hy-MT2-7B:** served by vLLM and called through the chat API with the prompt format from its model card. It translates one whole message, with no extra context.
+- **TranslateGemma 27B** (analysis only, back-translation): its model card requires a structured chat format with language codes. We check in the setup step whether vLLM passes this through, and otherwise call it through a small script using the model card's recipe.
 - **Number check:** after every translation we compare the numbers, percentages and amounts in the source and the output, handling the Russian decimal comma. A mismatch is flagged as a candidate semantic error.
 
-## 8. Models and clients
+## 11. Models and settings (`configs/models.yaml`, proposed)
 
-| Name in `models.yaml` | Client | Settings |
+| Name | Server | Settings |
 |---|---|---|
-| `qwen3.8-27b` (main negotiator) | OpenAI-compatible → vLLM `:8000` | BF16, `enable_thinking: false`, temperature 0.7, per-request seed, `response_format` = JSON schema |
-| `gemma-4-31b` (fallback negotiator) | OpenAI-compatible → vLLM `:8000` | same; if used, Qwen becomes MT2 |
-| `claude-haiku-5-5` (replication, back-translation, judge) | Anthropic Python SDK | thinking disabled for negotiation, low effort for the judge, structured outputs, no sampling parameters (the current API rejects them), prompt caching, Batch API for offline jobs |
-| `claude-sonnet-5-5` (judge check, 150 messages) | Anthropic SDK, batch | |
-| `translategemma-27b` | OpenAI-compatible → vLLM `:8001` | |
-| `nllb-200-3.3b` | `mt_service` `:8002` | |
+| `qwen3.8-27b` | vLLM :8000 | thinking off (`enable_thinking: false`), model card's non-thinking sampling (top_p 0.8, top_k 20, presence penalty 1.5), temperature 0.7, a fixed seed per run, JSON schema output |
+| `gemma-4-31b` | vLLM :8001 | thinking off, temperature 0.7, seed, JSON schema output |
+| `hy-mt2-7b` | vLLM :8002 | model card's translation prompt and sampling |
+| `nllb-200-3.3b` | NLLB service :8003 | beam search, sentence by sentence |
+| `translategemma-27b` | vLLM :8004 (analysis) | model card's structured prompt, greedy decoding |
+| `ollama-small` | Ollama :11434 | small model for a laptop smoke test |
 
-The CIIT code talked to Ollama through its OpenAI-compatible API. vLLM speaks the same API, so their client code should work with a different base URL. We can also fall back to Ollama if FINKI doesn't allow vLLM.
+## 12. Runner
 
-## 9. Runner
+- **Grid:** `python -m negmt.runner configs/experiments/main.yaml` expands cells × persona pairings × repetitions (960 runs per model). `--dry-run` lists the plan without running anything.
+- **Concurrency:** about 32 negotiations run in parallel threads, and the servers batch their requests.
+- **Resume:** runs that already have a log file are skipped. A crashed run leaves no log and is redone; infrastructure failures are reported, not logged.
+- **Cache:** every reply is stored by a hash of model, prompts, schema, seed and temperature, so replaying a run reproduces it exactly.
+- **Settings:** server addresses come from `.env` or the SLURM job's environment.
 
-- **Grid:** `python -m negmt.runner configs/experiments/main.yaml` expands cells × persona pairings × repetitions. B cells are also run with roles swapped. Each run gets a stable ID, for example `main/qwen/B2-swap/P2/017`.
-- **Concurrency:** asyncio runs about 32 negotiations at once against vLLM, which batches them. A separate small limit applies to Anthropic calls.
-- **Resume:** finished run IDs are skipped. A crashed run restarts from the beginning, and partial logs are kept separately.
-- **Cache:** responses are stored by a hash of model, prompt and settings, so reruns and analysis never pay twice.
-- **Budget guard:**
-  - every paid response is costed from its token counts;
-  - spending is split into envelopes, and $8 is reserved for back-translation, judging and the Sonnet check before any Claude negotiations run;
-  - the runner refuses to start a paid run that would overflow its envelope;
-  - prepaid $20 credits with auto-reload off form the outer limit.
+## 13. Analysis pipeline
 
-## 10. Deployment
-
-```
-┌──────── FINKI GPU node (SLURM job, Apptainer) ────────┐        ┌──── Anthropic API ────┐
-│ GPU0  vLLM :8000  Qwen3.8-27B   (negotiator)          │        │ Claude Haiku 5.5      │
-│ GPU1  vLLM :8001  TranslateGemma 27B   (MT2)          │        │ Claude Sonnet 5.5     │
-│ GPU1  mt_service :8002  NLLB-200 3.3B  (MT1)          │        └───────────▲───────────┘
-└───────────────▲───────────────────────────────────────┘                    │ HTTPS
-                │ local ports, or SSH tunnel over eduVPN                      │
-        ┌───────┴──────────── runner (Python) ────────────────────────────────┴┐
-        │ on the GPU node if it has internet; otherwise on the front node / laptop │
-        └───────────────────────────────┬───────────────────────────────────────┘
-                                        ▼
-                         logs/ (JSONL) → analysis on the laptop → paper/
-```
-
-- **GPU memory:** Qwen BF16 needs about 56 GB on GPU0. TranslateGemma (about 55 GB) and NLLB (about 7 GB) share GPU1, with vLLM capped at about 75% of that GPU's memory.
-- **Storage:** about 140–200 GB for weights, the container and logs.
-- **One SLURM job** (`serve_models.sbatch`) starts the three services and stays up for the run window.
-- **The runner job** (`run_grid.sbatch`) runs on the same node if outbound HTTPS works. If not, `infra/tunnel.sh` forwards ports 8000–8002 to wherever the runner runs.
-- **Fallback without FINKI:**
-  - a cheap hosted Qwen model replaces vLLM;
-  - NLLB-200 distilled-1.3B runs on the laptop CPU;
-  - Claude Haiku becomes the LLM translator;
-  - the Claude replication is dropped.
-
-## 11. Analysis pipeline
-
-1. **Outcome metrics** (`analysis/metrics.py`):
+1. **Outcome metrics:**
    - status counts and rounds;
-   - utilities, joint utility, Pareto distance and Nash product;
+   - utilities, joint utility, Pareto distance, Nash product and below-BATNA flags;
    - lose-lose on the monitoring issue;
-   - concession curves and DANS move types, computed from `my_offer` sequences;
-   - comprehension accuracy (`their_offer_as_understood` against the true offer);
-   - language compliance, message length and politeness markers.
-2. **Translation errors** (`analysis/translation_eval/`):
-   - extract every MT event;
-   - back-translate with Claude Haiku (batch);
-   - compute automatic scores: CometKiwi QE, plus chrF and BERTScore between the original and its back-translation, plus the number check;
-   - run the LLM judge (Haiku, batch, schema 4.5);
-   - export a 150-message stratified sample for the Russian validator and re-import the labels;
-   - compute Cohen's κ against the human labels, and judge the same 150 with Sonnet.
+   - concession curves and DANS move types, computed from `my_offer`;
+   - comprehension accuracy, language compliance, message length, politeness markers.
+2. **Translation errors:**
+   - extract every translated message;
+   - back-translate it with TranslateGemma;
+   - compute CometKiwi, chrF/BERTScore and the number check;
+   - run the Gemma 4 judge (schema 8.3);
+   - export a 150-message sample for the Russian reviewer and import the labels;
+   - compute Cohen's kappa against the human labels, with Qwen3.8-27B as the second judge on the same 150.
 3. **Linking errors to outcomes:**
-   - turn-level: what happens in the 1–2 turns after an error (misread offer, change of move type);
-   - run-level: regression of outcomes on error counts per category.
-4. **Statistics and figures** (`analysis/stats.py`, `figures.py`):
-   - models and tests as listed in PLAN.md §13;
-   - figures and tables are written straight into `paper/figures` and `paper/tables`.
+   - turn-level: what happens in the 1–2 turns after an error;
+   - run-level: regression of outcomes on error counts.
+4. **Statistics and figures:** written straight into `paper/figures` and `paper/tables`.
 
-## 12. Reproducibility and data release
+## 14. Reproducibility and data release
 
-- **What each log records:** the config, the git commit, model IDs and revisions, prompt-template hashes, seeds and the full prompts.
-- **Retrieval** is deterministic: the embeddings are computed once and stored.
+- **Fully reproducible:** open weights with pinned revisions, fixed seeds, logged prompts and settings, the git version in every log, and cached replies.
 - **Release:**
   - code and configs go on GitHub;
-  - logs and annotations are zipped as a GitHub release, archived on Zenodo for a DOI at camera-ready;
-  - `.env` with API keys and the HF token is never committed.
+  - logs and annotations are zipped as a release, with a Zenodo DOI at camera-ready;
+  - `.env` with the Hugging Face token is never committed.
 
-## 13. Testing
+## 15. Testing
 
-| Level | What | How |
+| Level | What | Status |
 |---|---|---|
-| Unit | Utility, Pareto (32 deals), Nash (68/72); validators; protocol transitions; channel routing per cell; retrieval determinism; number check; budget envelopes | pytest |
-| End-to-end, free | A full negotiation for every cell using a scripted `FakeLLM` and a tagging `FakeTranslator`; checks logs, outcomes and routing | pytest |
-| A/A | EN–EN with an identity translator in the channel must match EN–EN with no channel | pilot |
-| Smoke | 1 real run per cell and model | before the pilot |
-| Manipulation checks | Language ID per message, JSON validity rate, MT output non-empty and actually translated, offer text matching the structured offer (sample) | runner and analysis |
-| Pilot | ~10 runs per key cell: calibrate BATNAs (60–80% EN–EN agreement), choose Qwen or Gemma, measure real tokens and cost | 3–4 Dec |
+| Unit | Scoring (Pareto 32 deals, Nash 68/72), protocol transitions incl. the confirmation turn, channel routing per cell, agent validation and retries, prompts, corpus, cache, client against a mock server, `.env` loading | 107 tests passing |
+| End-to-end with fakes | A full negotiation for every cell × pairing; illusory agreement from a corrupting translator; timeout, walk-away, error, deal below BATNA; runner resume and crash reporting | passing |
+| A/A | C1 with an identity translator must match A1 | pilot |
+| Smoke | 1 real run per cell on the FINKI servers | Dec 1–2 |
+| Pilot | ~10 runs per key cell: BATNA calibration, negotiator choice, real speed; translator comparison | Dec 3–4 |
 
-## 14. Build plan
+## 16. Build plan
 
-| When | Step | Done when |
+| When | Step | Status |
 |---|---|---|
-| Thu 26 Nov | 1. Repo scaffold, `scenario.py`, `ostra.yaml`, unit tests | Pareto/Nash tests reproduce `planning/scenario_check.py` |
-| Fri 27 Nov | 2. Protocol, orchestrator, channel, logger, with fakes | Every cell runs end-to-end with fakes and logs validate |
-| Fri 27 – Sat 28 Nov | 3. EN materials: prompt templates, Hawk and Dove personas, 10–15 briefing docs per role | Team has reviewed them |
-| Sat 28 – Sun 29 Nov | 4. LLM clients (OpenAI-compatible and Anthropic), JSON enforcement, retries, cache, budget guard | One real Haiku negotiation for a few cents |
-| Sun 29 Nov | 5. RAG: chunking, BGE-M3 embeddings, retrieval | Retrieval tests pass; chunk IDs align across EN and RU |
-| Mon 30 Nov | 6. MT adapters, `mt_service`, number check | NLLB works on the laptop CPU (distilled-600M) |
-| Mon 30 Nov – Wed 2 Dec | 7. FINKI: container, SLURM scripts, services, tunnel | One smoke run per cell on real models |
-| Sat 28 Nov – Wed 2 Dec | 8. RU materials: two LLM drafts plus a back-translation diff, then the validator's review | Validator signs off |
-| Tue 1 Dec | 9. Runner: grid, concurrency, resume | 50 fake runs in parallel, then resumed after a kill |
-| Thu 3 – Fri 4 Dec | 10. Pilot and calibration; freeze design and analysis plan (git tag `v1.0-frozen`) | Baseline agreement 60–80% |
-| Sat 5 – Wed 9 Dec | 11. Analysis code, written while the main runs execute | Metrics and figures regenerate from logs with one command |
+| Thu 26 Nov | 1. Repo, scenario and scoring | done |
+| Thu 26 Nov | 2. Protocol, channel, orchestrator, with fakes | done |
+| Thu 26 Nov | 3. English prompts, personas, country briefs, briefing books | done (approved) |
+| Thu 26 Nov | 4. Model client (OpenAI-compatible), response cache | done |
+| Thu 26 Nov | 9. Runner: grid, parallel runs, resume | done |
+| Fri 27 – Sat 28 Nov | 5. Retrieval: BGE-M3 embeddings stored on disk, top-3 search | next |
+| Fri 27 – Mon 30 Nov | 6. Translation adapters: NLLB service, Hy-MT2, number check | next |
+| Fri 27 – Wed 2 Dec | 8. Russian drafts → reviewer → final | drafts next |
+| Mon 30 Nov – Wed 2 Dec | 7. FINKI setup: container, weights, SLURM scripts | needs access |
+| Thu 3 – Fri 4 Dec | 10. Pilot, translator comparison, freeze (git tag `v1.0-frozen`) | needs access |
+| Sat 5 – Wed 9 Dec | 11. Analysis code, written while the main runs execute | — |
 
-## 15. Reusing the CIIT code
+## 17. Open technical questions
 
-| CIIT part | Becomes |
-|---|---|
-| Ollama client (OpenAI-compatible) | `llm/openai_compat.py`, with the base URL pointed at vLLM |
-| Country prompt + archetype + task rules | `configs/personas/*`, `configs/prompts/*` |
-| Alternating turn loop with full history | `orchestrator.py` + `protocol.py` (adds accept/confirm and the channel) |
-| JSON-schema judge | Template for `translation_eval/judge.py`; its consistency/coherence rubric becomes the secondary persona-adherence measure |
-| Run logging and failure flags | `logio.py` (extended with translations, retrievals and costs) |
-
-If their code is easy to extend, we keep its structure and add the new modules. If not, we port its prompts and personas into this layout.
-
-## 16. Open technical questions
-
-- Do the FINKI GPU nodes have outbound internet? This decides where the runner lives.
-- Can a long-running vLLM server sit inside a SLURM job? Can we build Apptainer images on the cluster?
-- TranslateGemma's exact Hugging Face ID and prompt template, and its EN↔RU quality (check in the pilot).
-- Qwen3.8-27B's Russian quality, and whether it deadlocks like Qwen3-32B did in the CIIT runs (check in the pilot).
-- Haiku 5.5's minimum cacheable prompt length. The budget assumes no caching.
+- Do the GPU nodes have internet access, at least for the one-time download? Is there a storage quota?
+- Can a vLLM server run inside a SLURM job? Can we build Apptainer images on the cluster?
+- Does vLLM pass TranslateGemma's structured prompt through the chat API?
+- The real speed and GPU-memory headroom on A100s: BF16 or FP8 weights, one or two GPUs per model.
+- The Russian quality of the proposed negotiators, and Hy-MT2's real EN↔RU quality (pilot).

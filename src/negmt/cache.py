@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import uuid
 from pathlib import Path
 from typing import Any, Optional
 
@@ -29,7 +30,7 @@ class ResponseCache:
     def put(self, key: str, value: dict) -> None:
         p = self._path(key)
         p.parent.mkdir(parents=True, exist_ok=True)
-        tmp = p.with_suffix(".tmp")
+        tmp = p.with_suffix(f".{uuid.uuid4().hex}.tmp")  # unique, so concurrent writers never collide
         tmp.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
         tmp.replace(p)
 

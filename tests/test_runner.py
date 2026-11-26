@@ -77,3 +77,16 @@ def test_cache_serves_repeat_calls(tmp_path):
 def test_shipped_experiment_configs_dry_run(name, capsys):
     assert main([str(ROOT / "configs" / "experiments" / name), "--dry-run"]) == 0
     assert "runs planned" in capsys.readouterr().out
+
+
+def test_env_file_loader(tmp_path, monkeypatch):
+    from negmt.runner import load_env_file
+
+    monkeypatch.delenv("NEGMT_TEST_A", raising=False)
+    monkeypatch.setenv("NEGMT_TEST_B", "kept")
+    env = tmp_path / ".env"
+    env.write_text("# comment\nNEGMT_TEST_A=http://x:1\nNEGMT_TEST_B=overridden\nEMPTY=\n", encoding="utf-8")
+    loaded = load_env_file(env)
+    import os
+    assert os.environ["NEGMT_TEST_A"] == "http://x:1" and os.environ["NEGMT_TEST_B"] == "kept"
+    assert loaded == {"NEGMT_TEST_A": "http://x:1"}

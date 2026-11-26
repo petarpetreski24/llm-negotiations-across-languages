@@ -149,6 +149,24 @@ def _clients_from_config(models_cfg: Mapping[str, Any]) -> tuple[LLMFactory, Tra
     return llm_factory, translator_factory
 
 
+def load_env_file(path: str | Path) -> dict[str, str]:
+    """Read KEY=VALUE lines from a .env file into os.environ (existing variables win). Returns what was set."""
+    p = Path(path)
+    loaded: dict[str, str] = {}
+    if not p.exists():
+        return loaded
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if key and value and key not in os.environ:
+            os.environ[key] = value
+            loaded[key] = value
+    return loaded
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("experiment")
@@ -170,6 +188,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             print(f"   … {len(specs) - 20} more")
         return 0
 
+    load_env_file(ROOT / ".env")  # service URLs (and an HF token for downloads), never committed
     models_cfg = yaml.safe_load((root / "models.yaml").read_text(encoding="utf-8"))
     llm_factory, translator_factory = _clients_from_config(models_cfg)
 

@@ -29,7 +29,7 @@ class PromptBuilder(Protocol):
 class TemplatePromptBuilder:
     """Renders prompts from configs/ in the agent's instruction language.
 
-    Layers (as in the CIIT framework): role situation + persona archetype + score table + rules.
+    Layers: role situation + persona archetype + score table + rules.
     Files: prompts/{system,turn,retry}.<lang>.j2, personas/<persona>.<lang>.md,
     roles/<role>.<lang>.md, prompts/languages.yaml.
     """
@@ -97,7 +97,8 @@ class PlainPromptBuilder:
         return "\n".join(lines)
 
     def turn_message(self, spec, round_no, max_rounds, incoming, excerpts) -> str:
-        parts = [f"Round {round_no} of {max_rounds}."]
+        parts = [f"Round {round_no} of {max_rounds}." if round_no <= max_rounds
+                 else "Message limit reached: accept the same terms to conclude, or the talks end."]
         if excerpts:
             parts.append("Briefing excerpts:\n" + "\n".join(f"- {e}" for e in excerpts))
         if incoming is None:

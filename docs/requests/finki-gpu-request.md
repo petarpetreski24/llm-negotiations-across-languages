@@ -1,6 +1,6 @@
 # Request: FINKI GPU resources for the MIPRO 2027 study
 
-Draft prepared 26 Nov 2026. Part A goes to the OSC lab (form or ticket), ideally sent by or with the supervisor. Part B is a short message to the CIIT 2026 co-authors. Fill in the bracketed fields before sending.
+Draft prepared 26 Nov 2026. Part A goes to the OSC lab (form or ticket), ideally sent by or with the supervisor. Part B is a short message for the supervisor and co-authors. Fill in the bracketed fields before sending.
 
 ---
 
@@ -22,8 +22,6 @@ We study whether routing an LLM negotiation through machine translation changes 
 
 Each side has a private score table, so every outcome can be scored exactly: agreement rate, rounds, utility, concession patterns, and misunderstood offers. Every translated message is back-translated and checked for semantic, pragmatic and cultural errors. The question is whether translation acts as a neutral channel or as an extra, unmodelled participant.
 
-The paper extends our CIIT 2026 framework ("AI Agents in Diplomatic Negotiations: A Multi-Agent Simulation for Conflict Resolution"). That work also ran open-weight models on FINKI resources.
-
 ### 2. Why FINKI resources
 
 We want the whole study to run on open-weight models hosted at FCSE, with no external AI services:
@@ -31,7 +29,9 @@ We want the whole study to run on open-weight models hosted at FCSE, with no ext
 - there is no API cost;
 - model versions are pinned, so anyone can reproduce the results.
 
-### 3. Models we will run
+### 3. Models we plan to run
+
+The line-up is proposed and may change after a short pilot; all candidates are open-weight models of similar size.
 
 | Role | Model | Licence | GPU memory (BF16) |
 |---|---|---|---|
@@ -49,13 +49,13 @@ All language models are served with vLLM, an open-source server with an OpenAI-c
 | Item | Request |
 |---|---|
 | GPUs | 4× A100 80 GB on one node (minimum 2), for about 5 days between **3 and 12 December 2026**; a short test slot (a few hours) around 30 Nov – 2 Dec |
-| Expected use | About 1–1.5 days of compute on 4 GPUs: a pilot, ~1,900 negotiations, ~13,000 translation checks; the rest is buffer for reruns |
-| Storage | About 300 GB in the project folder (model weights ~230 GB, container, logs) |
+| Expected use | About 10–27 hours of one 4-GPU node: a pilot, ~1,900 negotiations, ~13,000 translation checks; the rest is buffer for reruns |
+| Storage | About 300 GB in the project folder (model weights ~210 GB, containers ~20 GB, logs and results ~2 GB) |
 | Job length | Jobs of up to 24–48 hours |
 
 ### 5. Questions
 
-1. Is the account or allocation used for the CIIT 2026 experiments still active, and can it cover this work? If a new application is needed, can it be reviewed before 1 December?
+1. Can this work run under an existing allocation of our group or supervisor? If a new application is needed, can it be reviewed before 1 December?
 2. What are the SLURM limits (maximum job time, GPUs per user)? Is a reservation possible for 3–12 December?
 3. Can a job run a long-lived inference server (vLLM) and connect to it from the same job or the front node?
 4. Can we build Apptainer images on the cluster from Docker Hub or NGC, or must we build them elsewhere and upload?
@@ -68,13 +68,12 @@ We will include the OSC lab's required acknowledgement sentence in the paper and
 
 ---
 
-## Part B: message to the CIIT 2026 co-authors
+## Part B: message to the supervisor and co-authors
 
-> Hi all, we are extending our CIIT 2026 negotiation framework for a MIPRO 2027 paper (deadline 21 Dec). We'll compare negotiations held in the same language with ones held through machine translation (English–Russian), using open models on FINKI GPUs only: Qwen3.8-27B and Gemma 4 31B as negotiators, NLLB-200 and Hy-MT2-7B as translators, and Gemma 4 as the error judge.
+> Hi all, for our MIPRO 2027 paper (deadline 21 Dec) we'll compare negotiations held in the same language with ones held through machine translation (English–Russian), using open models on FINKI GPUs only (proposed: Qwen3.8-27B and Gemma 4 31B as negotiators, NLLB-200 and Hy-MT2-7B as translators, Gemma 4 as the error judge).
 >
-> Could you help with three things?
-> 1. Which machine and account ran the Ollama models for the CIIT paper, and is it still active?
-> 2. Where is the CIIT code (repo link)?
-> 3. Does anyone know a fluent Russian speaker who could give about 10 hours to check Russian prompts and label 150 translated messages (credit in the paper)?
+> Could you help with two things?
+> 1. Do we already have a FINKI GPU allocation (OSC lab or another server) this could run under, or should we apply? The draft request is attached.
+> 2. Does anyone know a fluent Russian speaker who could give about 10 hours to check Russian prompts and label 150 translated messages (credit in the paper)?
 >
 > Thanks!

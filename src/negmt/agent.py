@@ -34,6 +34,7 @@ class AgentTurn:
     ms: float
     lang_detected: str
     prompt_sha: str
+    turn_message: str = ""
     retrieved: list[str] = field(default_factory=list)
 
 
@@ -102,6 +103,7 @@ class Agent:
                 ms=(time.perf_counter() - t0) * 1000,
                 lang_detected=langcheck.detect(out.message),
                 prompt_sha=_sha(self.system, messages),
+                turn_message=turn_msg,
                 retrieved=[cid for cid, _ in retrieved],
             )
         raise AgentFailure(f"{self.spec.role}: no valid reply after {self.max_retries + 1} attempts: {last_error}")

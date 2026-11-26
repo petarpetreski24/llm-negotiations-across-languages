@@ -1,0 +1,3 @@
+# How each instruction language names the dialogue languages inside the prompt.
+en: {en: "English", ru: "Russian"}
+ru: {en: "на английском языке", ru: "на русском языке"}

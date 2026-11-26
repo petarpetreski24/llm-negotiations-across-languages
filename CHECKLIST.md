@@ -47,12 +47,14 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 - [x] `orchestrator.py`: full negotiation → records, comprehension per turn, outcome scoring, JSONL log
 - [x] Tests: 75 passing (protocol, routing, agent validation, cells, end-to-end for all 12 cells × 2 pairings, illusory agreement via corrupting translator, timeout, walk-away, error)
 
-## 4. Build: step 3, English materials (Fri 27 – Sat 28 Nov)
+## 4. Build: step 3, English materials (done 26 Nov)
 
-- [ ] System and turn prompt templates (EN)
-- [ ] Hawk and Dove personas (EN)
-- [ ] Briefing books: 10–15 documents per country (EN), chunked with stable IDs
-- [ ] **(you)** Team review of materials
+- [x] System, turn and retry prompt templates (EN) in `configs/prompts/`, rendered by `TemplatePromptBuilder` (layers: situation + persona + score table + rules; no mention of translation)
+- [x] Hawk and Dove personas (EN) in `configs/personas/`
+- [x] Role situation briefs (EN) in `configs/roles/`
+- [x] Briefing books: 12 documents per country (EN, ~2,300 words, 46 chunks with IDs like `aldoria/07-world-bank#c2`); `corpus.py` loader and EN/RU alignment check
+- [x] Tests: 92 passing (prompts for every role × persona × dialogue language, no leak of the other side's scores, briefings never state points, chunking)
+- [ ] **(you)** Team review of materials: [configs/roles](configs/roles), [configs/personas](configs/personas), [configs/corpora](configs/corpora), [configs/prompts/system.en.j2](configs/prompts/system.en.j2)
 
 ## 5. Build: step 4, model clients (Sat 28 – Sun 29 Nov)
 

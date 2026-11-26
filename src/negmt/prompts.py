@@ -9,6 +9,7 @@ The other side's latest message is wrapped in <<< >>> so it is clearly delimited
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Protocol
 
 from negmt.scenario import Scenario
@@ -23,6 +24,62 @@ class PromptBuilder(Protocol):
     ) -> str: ...
 
     def retry_message(self, spec: AgentSpec, error: str) -> str: ...
+
+
+class TemplatePromptBuilder:
+    """Renders prompts from configs/ in the agent's instruction language.
+
+    Layers (as in the CIIT framework): role situation + persona archetype + score table + rules.
+    Files: prompts/{system,turn,retry}.<lang>.j2, personas/<persona>.<lang>.md,
+    roles/<role>.<lang>.md, prompts/languages.yaml.
+    """
+
+    def __init__(self, config_root: str | Path):
+        import jinja2
+        import yaml
+
+        self.root = Path(config_root)
+        self.env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(str(self.root / "prompts")),
+            undefined=jinja2.StrictUndefined,
+            keep_trailing_newline=False,
+            trim_blocks=True,
+        )
+        self.language_names = yaml.safe_load((self.root / "prompts" / "languages.yaml").read_text(encoding="utf-8"))
+
+    def _text(self, *parts: str) -> str:
+        return (self.root.joinpath(*parts)).read_text(encoding="utf-8").strip()
+
+    def system_prompt(self, spec: AgentSpec, scenario: Scenario, max_rounds: int) -> str:
+        lang = spec.instr_lang
+        issues = [
+            {
+                "label": issue.label[lang],
+                "options": [
+                    {"id": k, "label": opt[lang], "points": issue.points[spec.role][k]}
+                    for k, opt in enumerate(issue.options)
+                ],
+            }
+            for issue in scenario.issues
+        ]
+        role = scenario.roles[spec.role]
+        return self.env.get_template(f"system.{lang}.j2").render(
+            country=role.name[lang],
+            situation=self._text("roles", f"{spec.role}.{lang}.md"),
+            persona=self._text("personas", f"{spec.persona}.{lang}.md"),
+            issues=issues,
+            batna=int(role.batna) if float(role.batna).is_integer() else role.batna,
+            max_rounds=max_rounds,
+            dialog_language=self.language_names[lang][spec.dialog_lang],
+        ).strip()
+
+    def turn_message(self, spec, round_no, max_rounds, incoming, excerpts) -> str:
+        return self.env.get_template(f"turn.{spec.instr_lang}.j2").render(
+            round_no=round_no, max_rounds=max_rounds, incoming=incoming, excerpts=excerpts
+        ).strip()
+
+    def retry_message(self, spec, error: str) -> str:
+        return self.env.get_template(f"retry.{spec.instr_lang}.j2").render(error=error).strip()
 
 
 class PlainPromptBuilder:

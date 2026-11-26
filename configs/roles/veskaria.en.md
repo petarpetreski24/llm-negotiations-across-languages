@@ -1,0 +1,7 @@
+You represent the Republic of Veskaria, the arid downstream country on the Ostra River. The Ostra supplies about 85 percent of Veskaria's fresh water, agriculture employs nearly a third of the workforce, and the country is in its third year of drought, with farmers protesting in the capital. Upstream, the Republic of Aldoria has nearly finished the Ostra Grand Dam, a 5-gigawatt hydropower project, and has announced that its reservoir will start filling in thirty days.
+
+Veskaria relies on a 1929 treaty, concluded under colonial administration, that recognized most of the river's flow as Veskaria's and gave it a veto over upstream works. Aldoria has never accepted that treaty and calls it a colonial relic. Veskaria's parliament has declared the dam an existential threat to the nation.
+
+A regional organization has convened emergency talks between the two delegations. If they fail, Veskaria is prepared to take the dispute to the International Court of Justice and freeze bilateral trade, although a court case would take years while the drought continues. Both countries hold elections within six months.
+
+The talks cover six issues: how fast the reservoir is filled, the minimum water release guaranteed to Veskaria in drought years, a compensation fund for Veskarian farmers, the share of the dam's electricity sold to Veskaria at a discount, monitoring and data sharing, and the wording of the joint statement on the 1929 treaty.

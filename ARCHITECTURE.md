@@ -31,6 +31,7 @@ lost-in-translation/
 │   ├── scenario/ostra.yaml            issues, options (EN/RU labels), points, BATNAs
 │   ├── cells.yaml                     A1–A4, B1–B3, C1–C2: languages per agent + channel
 │   ├── personas/{hawk,dove}.{en,ru}.md
+│   ├── roles/{aldoria,veskaria}.{en,ru}.md   situation brief per country (system prompt layer)
 │   ├── prompts/{system,turn}.{en,ru}.j2   Jinja2 templates per instruction language
 │   ├── corpora/{aldoria,veskaria}/{en,ru}/*.md   RAG briefings, parallel files
 │   ├── models.yaml                    endpoints, served names, settings, prices

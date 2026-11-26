@@ -1,0 +1,14 @@
+Message {{ round_no }} of {{ max_rounds }} for your delegation.
+{% if excerpts %}
+Relevant excerpts from your briefing book:
+{% for e in excerpts %}
+[{{ loop.index }}] {{ e }}
+{% endfor %}
+{%- endif %}
+{% if incoming is none %}
+You open the talks. Make your first proposal.
+{% else %}
+The other delegation's latest message:
+<<<{{ incoming }}>>>
+{% endif %}
+Reply with the JSON object only.

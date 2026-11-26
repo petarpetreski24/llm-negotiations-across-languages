@@ -35,3 +35,6 @@ paper/**/*.fls
 Thumbs.db
 .vscode/
 .idea/
+
+# crash dumps from Git-for-Windows tools
+*.stackdump

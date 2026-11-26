@@ -1,0 +1,18 @@
+# Experimental cells. Each cell lists two agent slots (instruction / dialogue language) and the channel.
+# Slot 0 plays Aldoria and slot 1 plays Veskaria; with swap_roles the cell is also run with roles exchanged.
+# MT1 / MT2 are resolved to concrete systems in the experiment config.
+cells:
+  A1: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode: none}}
+  A2: {agents: [{instr: ru, dialog: ru}, {instr: ru, dialog: ru}], channel: {mode: none}}
+  A3: {agents: [{instr: en, dialog: ru}, {instr: en, dialog: ru}], channel: {mode: none}}
+  A4: {agents: [{instr: ru, dialog: en}, {instr: ru, dialog: en}], channel: {mode: none}}
+  B1: {agents: [{instr: en, dialog: en}, {instr: ru, dialog: en}], channel: {mode: none}, swap_roles: true}
+  B2: {agents: [{instr: en, dialog: en}, {instr: ru, dialog: ru}], channel: {mode: mt, system: MT1}, swap_roles: true}
+  B3: {agents: [{instr: en, dialog: en}, {instr: ru, dialog: ru}], channel: {mode: mt, system: MT2}, swap_roles: true}
+  C1: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode: roundtrip, system: MT1, pivot: ru}}
+  C2: {agents: [{instr: en, dialog: en}, {instr: en, dialog: en}], channel: {mode: roundtrip, system: MT2, pivot: ru}}
+
+# Persona pairings: archetype per role.
+persona_pairings:
+  P1: {aldoria: dove, veskaria: dove}
+  P2: {aldoria: hawk, veskaria: dove}

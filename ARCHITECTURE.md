@@ -36,8 +36,8 @@ lost-in-translation/
 │   ├── models.yaml                    endpoints, served names, settings, prices
 │   └── experiments/{pilot,main,replication}.yaml
 ├── src/negmt/
-│   ├── scenario.py   prompts.py   rag.py   agent.py   protocol.py   orchestrator.py
-│   ├── channel.py    runner.py    budget.py   cache.py   langcheck.py   logio.py
+│   ├── scenario.py   cells.py   schemas.py   prompts.py   rag.py   agent.py   protocol.py
+│   ├── orchestrator.py   channel.py   runner.py   budget.py   cache.py   langcheck.py   logio.py
 │   ├── llm/          base.py · openai_compat.py · anthropic_client.py · fake.py
 │   └── translation/  base.py · identity.py · nllb.py · translategemma.py · roundtrip.py · fake.py
 ├── analysis/

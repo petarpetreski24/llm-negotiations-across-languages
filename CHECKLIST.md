@@ -32,18 +32,20 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 - [x] `src/negmt/scenario.py`: load scenario, utility of a deal, Pareto frontier, Nash point, ZOPA
 - [x] `tests/test_scenario.py`: reproduces planning numbers (15,625 deals, 32 Pareto-optimal, split 55/50, max joint 140, Nash 68/72, ZOPA 32.7%); 16 tests passing
 - [x] First commit (26 Nov)
-- [ ] **(you)** Push to GitHub (remote `origin` is set; push needs your go-ahead and GitHub login)
+- [x] Pushed to GitHub as petarpetreski24 (no Claude co-author line; repo-only git identity)
 
-## 3. Build: step 2, protocol and orchestrator with fakes (Fri 27 Nov)
+## 3. Build: step 2, protocol and orchestrator with fakes (done 26 Nov)
 
-- [ ] `configs/cells.yaml`: A1–A4, B1–B3 (with role swap), C1–C2
-- [ ] Data models for run spec, agent output, turn record, outcome (`logio.py`)
-- [ ] `protocol.py`: OPEN / PENDING / DEAL / ILLUSORY / WALK_AWAY / TIMEOUT / ERROR
-- [ ] `channel.py`: routing per cell (pass, translate, round-trip)
-- [ ] `llm/fake.py` and `translation/fake.py`
-- [ ] `agent.py` shell: build context, call model, validate JSON, retry
-- [ ] `orchestrator.py`: one full negotiation → JSONL log
-- [ ] Tests: protocol transitions, routing per cell, end-to-end run for every cell with fakes
+- [x] `configs/cells.yaml`: A1–A4, B1–B3 (with role swap → 12 variants), C1–C2, persona pairings P1/P2
+- [x] `cells.py`: load and sanity-check cells, expand role swaps, build run specs (stable run IDs and seeds, first mover alternates)
+- [x] `schemas.py`: run spec, agent output (+ JSON schema for structured outputs), turn record, outcome; `logio.py`: atomic JSONL logs
+- [x] `protocol.py`: OPEN / PENDING / DEAL / ILLUSORY / WALK_AWAY / TIMEOUT / ERROR, plus one confirmation reply after the limit
+- [x] `channel.py` + `translation/{base,identity,roundtrip,fake}.py`: pass, translate, round-trip, with every case logged
+- [x] `llm/{base,fake}.py`: fake negotiator that reads offers from the delivered text; scripted LLM for retry tests
+- [x] `agent.py`: context, model call, validation (schema, options, accept rules, message language), up to 2 retries; `langcheck.py`
+- [x] `prompts.py`: prompt-builder interface + plain placeholder (real templates in step 3)
+- [x] `orchestrator.py`: full negotiation → records, comprehension per turn, outcome scoring, JSONL log
+- [x] Tests: 75 passing (protocol, routing, agent validation, cells, end-to-end for all 12 cells × 2 pairings, illusory agreement via corrupting translator, timeout, walk-away, error)
 
 ## 4. Build: step 3, English materials (Fri 27 – Sat 28 Nov)
 

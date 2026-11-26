@@ -1,0 +1,74 @@
+# The Ostra River crisis: a fictional bilateral water treaty negotiation.
+# Points: each role's issue maxima sum to 100. BATNA = walk-away value (calibrated in the pilot).
+# Russian labels are DRAFTS until the Russian validator signs them off.
+id: ostra-v1
+roles:
+  aldoria:
+    name: {en: "Republic of Aldoria", ru: "Республика Альдория"}
+    position: upstream
+    batna: 45
+  veskaria:
+    name: {en: "Republic of Veskaria", ru: "Республика Вескария"}
+    position: downstream
+    batna: 45
+
+issues:
+  - id: filling
+    label: {en: "Reservoir filling period", ru: "Срок заполнения водохранилища"}
+    options:
+      - {en: "3 years", ru: "3 года"}
+      - {en: "5 years", ru: "5 лет"}
+      - {en: "7 years", ru: "7 лет"}
+      - {en: "10 years", ru: "10 лет"}
+      - {en: "15 years", ru: "15 лет"}
+    points: {aldoria: [25, 19, 13, 7, 0], veskaria: [0, 4, 8, 12, 15]}
+
+  - id: release
+    label: {en: "Guaranteed minimum release in drought years", ru: "Гарантированный минимальный попуск воды в засушливые годы"}
+    options:
+      - {en: "25 bcm per year", ru: "25 млрд м³ в год"}
+      - {en: "30 bcm per year", ru: "30 млрд м³ в год"}
+      - {en: "35 bcm per year", ru: "35 млрд м³ в год"}
+      - {en: "40 bcm per year", ru: "40 млрд м³ в год"}
+      - {en: "45 bcm per year", ru: "45 млрд м³ в год"}
+    points: {aldoria: [20, 15, 10, 5, 0], veskaria: [0, 8, 15, 23, 30]}
+
+  - id: compensation
+    label: {en: "Compensation fund for Veskarian farmers", ru: "Фонд компенсаций для вескарийских фермеров"}
+    options:
+      - {en: "no fund", ru: "без фонда"}
+      - {en: "USD 100 million", ru: "100 млн долларов США"}
+      - {en: "USD 250 million", ru: "250 млн долларов США"}
+      - {en: "USD 500 million", ru: "500 млн долларов США"}
+      - {en: "USD 1 billion", ru: "1 млрд долларов США"}
+    points: {aldoria: [25, 20, 14, 7, 0], veskaria: [0, 1, 2, 4, 5]}
+
+  - id: electricity
+    label: {en: "Share of the dam's electricity sold to Veskaria at a discount", ru: "Доля электроэнергии плотины, продаваемая Вескарии по льготной цене"}
+    options:
+      - {en: "0%", ru: "0%"}
+      - {en: "10%", ru: "10%"}
+      - {en: "20%", ru: "20%"}
+      - {en: "30%", ru: "30%"}
+      - {en: "40%", ru: "40%"}
+    points: {aldoria: [5, 4, 3, 1, 0], veskaria: [0, 6, 12, 19, 25]}
+
+  - id: monitoring
+    label: {en: "Monitoring and data sharing", ru: "Мониторинг и обмен данными"}
+    options:
+      - {en: "no monitoring", ru: "без мониторинга"}
+      - {en: "annual reports", ru: "ежегодные отчёты"}
+      - {en: "real-time data portal", ru: "портал данных в режиме реального времени"}
+      - {en: "joint technical commission", ru: "совместная техническая комиссия"}
+      - {en: "joint commission with international observers", ru: "совместная комиссия с международными наблюдателями"}
+    points: {aldoria: [3, 5, 7, 10, 0], veskaria: [0, 3, 6, 10, 8]}
+
+  - id: communique
+    label: {en: "Joint statement on the 1929 treaty", ru: "Формулировка совместного заявления о договоре 1929 года"}
+    options:
+      - {en: "recognizes Veskaria's historical rights", ru: "признаёт исторические права Вескарии"}
+      - {en: "acknowledges Veskaria's historical use of the river", ru: "отмечает историческое водопользование Вескарии"}
+      - {en: "takes note of the positions of both parties", ru: "принимает к сведению позиции обеих сторон"}
+      - {en: "affirms the principle of equitable and reasonable utilization", ru: "подтверждает принцип справедливого и разумного использования"}
+      - {en: "no reference to the treaty", ru: "без упоминания договора"}
+    points: {aldoria: [0, 4, 8, 15, 12], veskaria: [15, 11, 7, 0, 3]}

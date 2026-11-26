@@ -1,0 +1,37 @@
+# secrets
+.env
+*.key
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# run outputs and large artefacts
+logs/
+cache/
+results/raw/
+models/
+*.sif
+*.npy
+*.parquet
+
+# latex build files
+paper/**/*.aux
+paper/**/*.log
+paper/**/*.out
+paper/**/*.bbl
+paper/**/*.blg
+paper/**/*.synctex.gz
+paper/**/*.fdb_latexmk
+paper/**/*.fls
+
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

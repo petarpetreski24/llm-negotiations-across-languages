@@ -19,6 +19,17 @@ pytest
 
 Copy `.env.example` to `.env` and fill in the keys. `.env` is never committed.
 
+## Russian materials
+
+The Russian prompts, personas, briefs and briefing documents mirror the English ones and are checked automatically; a native speaker reviews them through a spreadsheet ([docs/russian-review/](docs/russian-review/README.md)).
+
+```bash
+pip install -e ".[review]"
+python -m negmt.review check     # numbers, template code, glossary, leftover English, structure
+python -m negmt.review export    # docs/russian-review/review-sheet.xlsx
+python -m negmt.review apply returned.xlsx
+```
+
 ## Layout
 
 ```

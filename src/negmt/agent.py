@@ -11,6 +11,7 @@ from typing import Optional, Protocol
 from pydantic import ValidationError
 
 from negmt import langcheck
+from negmt.errors import InvalidReply
 from negmt.llm.base import LLMClient
 from negmt.prompts import PromptBuilder
 from negmt.scenario import Scenario
@@ -85,11 +86,11 @@ class Agent:
             usage.usd += resp.usd
             try:
                 out = self.validate(resp.text)
-            except ValueError as err:
+            except InvalidReply as err:
                 last_error = str(err)
                 messages = messages + [
                     {"role": "assistant", "content": resp.text},
-                    {"role": "user", "content": self.prompts.retry_message(self.spec, last_error)},
+                    {"role": "user", "content": self.prompts.retry_message(self.spec, err)},
                 ]
                 continue
             # keep only the clean exchange in history
@@ -109,38 +110,46 @@ class Agent:
         raise AgentFailure(f"{self.spec.role}: no valid reply after {self.max_retries + 1} attempts: {last_error}")
 
     def validate(self, raw: str) -> AgentOutput:
+        """Parse and check one reply; raises InvalidReply (a ValueError) with a code."""
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as err:
-            raise ValueError(f"not valid JSON ({err.msg})") from err
+            raise InvalidReply("not_json") from err
         try:
             out = AgentOutput.model_validate(data)
         except ValidationError as err:
-            raise ValueError(f"schema error: {err.errors()[0]['msg']} at {err.errors()[0]['loc']}") from err
+            loc = err.errors()[0]["loc"]
+            raise InvalidReply("schema", field=".".join(str(x) for x in loc) or "reply") from err
 
-        self.scenario.validate_deal(out.my_offer)
+        self._check_deal(out.my_offer, "my_offer")
         if out.decision == "accept":
             if out.accepted_terms is None:
-                raise ValueError("decision is accept but accepted_terms is missing")
-            self.scenario.validate_deal(out.accepted_terms)
+                raise InvalidReply("accept_without_terms")
+            self._check_deal(out.accepted_terms, "accepted_terms")
         elif out.accepted_terms is not None:
-            raise ValueError("accepted_terms must be null unless decision is accept")
+            raise InvalidReply("terms_without_accept")
 
+        if set(out.their_offer_as_understood) - set(self.scenario.issue_ids):
+            raise InvalidReply("unknown_issue")
         understood: dict[str, Optional[int]] = {}
         for issue in self.scenario.issues:
             k = out.their_offer_as_understood.get(issue.id)
             if k is not None and not 0 <= k < issue.n_options:
-                raise ValueError(f"their_offer_as_understood.{issue.id}: invalid option {k}")
+                raise InvalidReply("invalid_option", issue=issue.id, option=k)
             understood[issue.id] = k
-        if set(out.their_offer_as_understood) - set(self.scenario.issue_ids):
-            raise ValueError("their_offer_as_understood has unknown issues")
         out.their_offer_as_understood = understood
 
         if not out.message.strip():
-            raise ValueError("message is empty")
+            raise InvalidReply("empty_message")
         if not langcheck.matches(out.message, self.spec.dialog_lang):
-            raise ValueError(f"message must be written in {self.spec.dialog_lang}, got {langcheck.detect(out.message)}")
+            raise InvalidReply("wrong_language", expected=self.spec.dialog_lang, detected=langcheck.detect(out.message))
         return out
+
+    def _check_deal(self, deal: dict[str, int], field_name: str) -> None:
+        try:
+            self.scenario.validate_deal(deal)
+        except ValueError as err:
+            raise InvalidReply("invalid_offer", field=field_name) from err
 
 
 def _sha(system: str, messages: list[dict[str, str]]) -> str:

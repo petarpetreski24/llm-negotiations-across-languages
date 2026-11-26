@@ -1,14 +1,17 @@
 # The Ostra River crisis: a fictional bilateral water treaty negotiation.
 # Points: each role's issue maxima sum to 100. BATNA = walk-away value (calibrated in the pilot).
-# Russian labels are DRAFTS until the Russian validator signs them off.
+# Russian labels are DRAFTS until the Russian reviewer signs them off (docs/russian-review/).
+# name_gen: the genitive form the Russian prompts need ("делегация Республики Альдория").
 id: ostra-v1
 roles:
   aldoria:
     name: {en: "Republic of Aldoria", ru: "Республика Альдория"}
+    name_gen: {ru: "Республики Альдория"}
     position: upstream
     batna: 45
   veskaria:
     name: {en: "Republic of Veskaria", ru: "Республика Вескария"}
+    name_gen: {ru: "Республики Вескария"}
     position: downstream
     batna: 45
 
@@ -34,7 +37,7 @@ issues:
     points: {aldoria: [20, 15, 10, 5, 0], veskaria: [0, 8, 15, 23, 30]}
 
   - id: compensation
-    label: {en: "Compensation fund for Veskarian farmers", ru: "Фонд компенсаций для вескарийских фермеров"}
+    label: {en: "Compensation fund for Veskarian farmers", ru: "Компенсационный фонд для вескарийских фермеров"}
     options:
       - {en: "no fund", ru: "без фонда"}
       - {en: "USD 100 million", ru: "100 млн долларов США"}
@@ -64,10 +67,10 @@ issues:
     points: {aldoria: [3, 5, 7, 10, 0], veskaria: [0, 3, 6, 10, 8]}
 
   - id: communique
-    label: {en: "Joint statement on the 1929 treaty", ru: "Формулировка совместного заявления о договоре 1929 года"}
+    label: {en: "Joint statement on the 1929 treaty", ru: "Совместное заявление о договоре 1929 года"}
     options:
       - {en: "recognizes Veskaria's historical rights", ru: "признаёт исторические права Вескарии"}
-      - {en: "acknowledges Veskaria's historical use of the river", ru: "отмечает историческое водопользование Вескарии"}
+      - {en: "acknowledges Veskaria's historical use of the river", ru: "констатирует историческое водопользование Вескарии"}
       - {en: "takes note of the positions of both parties", ru: "принимает к сведению позиции обеих сторон"}
       - {en: "affirms the principle of equitable and reasonable utilization", ru: "подтверждает принцип справедливого и разумного использования"}
       - {en: "no reference to the treaty", ru: "без упоминания договора"}

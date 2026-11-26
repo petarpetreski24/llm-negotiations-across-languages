@@ -14,7 +14,7 @@ We are building a **research pipeline**, not an app. A Python program (the *runn
 |---|---|---|---|
 | 1 | **Scenario and scoring** (`scenario.py`, `ostra.yaml`) | Issues, options with EN/RU labels, points, BATNAs; utility of any deal, Pareto frontier, Nash point | done |
 | 2 | **Cells** (`cells.py`, `cells.yaml`) | The 12 experimental conditions and the 2 persona pairings → one run spec per negotiation | done |
-| 3 | **Prompt builder** (`prompts.py`, `configs/prompts`) | Renders each agent's prompts in its *instruction language* from layers: situation, persona, score table, rules | EN done, RU next |
+| 3 | **Prompt builder** (`prompts.py`, `configs/prompts`) | Renders each agent's prompts in its *instruction language* from layers: situation, persona, score table, rules | EN done; RU drafted, with the reviewer |
 | 4 | **Retriever** (`rag.py`, `corpus.py`) | Splits the briefing books into sections; returns the 3 most relevant per turn | loader done; search next |
 | 5 | **Agent** (`agent.py`) | Builds the turn context, calls its model, checks the reply (format, options, language), retries | done |
 | 6 | **Model client** (`llm/openai_compat.py`) | Talks to any OpenAI-compatible server (vLLM on FINKI, Ollama for local tests) | done |
@@ -130,18 +130,20 @@ llm-negotiations-across-languages/
 │   ├── cells.yaml                     A1–A4, B1–B3, C1–C2 + persona pairings
 │   ├── roles/{aldoria,veskaria}.{en,ru}.md      country briefs (system prompt layer)
 │   ├── personas/{hawk,dove}.{en,ru}.md
-│   ├── prompts/{system,turn,retry}.{en,ru}.j2 · languages.yaml
+│   ├── prompts/{system,turn,retry}.{en,ru}.j2 · languages.yaml · errors.yaml (retry reasons per language)
+│   ├── glossary.yaml                  fixed EN→RU terms, checked automatically
 │   ├── corpora/{aldoria,veskaria}/{en,ru}/*.md  briefing books (parallel files)
 │   ├── models.yaml                    model servers and translators (proposed, not confirmed)
 │   └── experiments/{pilot,aa-test,main}.yaml
 ├── src/negmt/
-│   ├── scenario.py  cells.py  schemas.py  prompts.py  corpus.py  rag.py  agent.py
+│   ├── scenario.py  cells.py  schemas.py  prompts.py  corpus.py  rag.py  agent.py  errors.py
+│   ├── materials.py  textcheck.py  review.py      Russian materials: checks, review sheet
 │   ├── protocol.py  orchestrator.py  channel.py  runner.py  cache.py  langcheck.py  logio.py
 │   ├── llm/          base.py · openai_compat.py · fake.py
 │   └── translation/  base.py · identity.py · roundtrip.py · nllb.py · openai_mt.py · fake.py
 ├── analysis/   metrics.py · stats.py · figures.py · translation_eval/
 ├── infra/      mt_service.py (NLLB) · slurm/serve_models.sbatch · tunnel.sh
-├── docs/       requests/ (FINKI request) · russian-review/ (guide for the Russian reviewer)
+├── docs/       requests/ (FINKI request) · russian-review/ (reviewer guide, review sheet, notes, back-translation)
 ├── planning/   scenario_check.py · compute_model.py
 ├── tests/      unit tests + end-to-end tests with fake models and translators
 └── paper/      MIPRO LaTeX template · figures/ · tables/
@@ -232,7 +234,17 @@ Every adapter implements `translate(text, src, tgt) -> TranslationResult{text, s
   - translates sentence by sentence (split with `razdel` for Russian and `pysbd` for English), using language codes `eng_Latn` / `rus_Cyrl`.
 - **Hy-MT2-7B:** served by vLLM and called through the chat API with the prompt format from its model card. It translates one whole message, with no extra context.
 - **TranslateGemma 27B** (analysis only, back-translation): its model card requires a structured chat format with language codes. We check in the setup step whether vLLM passes this through, and otherwise call it through a small script using the model card's recipe.
-- **Number check:** after every translation we compare the numbers, percentages and amounts in the source and the output, handling the Russian decimal comma. A mismatch is flagged as a candidate semantic error.
+- **Number check:** after every translation we compare the numbers, percentages and amounts in the source and the output, handling the Russian decimal comma. A mismatch is flagged as a candidate semantic error. The check itself is built (`textcheck.numbers`, also used on the Russian materials); it is wired into the channel together with the MT adapters.
+
+### 10.1 The Russian prompt materials
+
+The Russian files mirror the English ones line for line (templates), paragraph for paragraph (personas, country briefs) and heading for heading (briefing documents), so every Russian segment pairs with its English source. `python -m negmt.review` then runs four steps:
+- `check`: numbers, template code, glossary terms (`configs/glossary.yaml`), leftover English, no mention of translation, matching structure;
+- `backtranslate`: machine back-translation with Opus-MT (ru→en), a system the study does not use, so the materials are not tuned towards our own MT systems; chrF against the English flags meaning shifts in longer segments;
+- `export`: the reviewer's spreadsheet (`docs/russian-review/review-sheet.xlsx`) with flags, translator's notes, the glossary and a rendered example prompt;
+- `apply`: writes the reviewer's corrections back into `configs/`, refusing rows whose draft changed after the export.
+
+Retry messages are worded in the agent's instruction language: the agent rejects a reply with an error code (`errors.py`), and the prompt builder words it from `configs/prompts/errors.yaml`. Russian also needs plural endings after numbers (`plural_ru`) and the genitive of the country name (`name_gen` in `ostra.yaml`).
 
 ## 11. Models and settings (`configs/models.yaml`, proposed)
 
@@ -285,7 +297,7 @@ Every adapter implements `translate(text, src, tgt) -> TranslationResult{text, s
 
 | Level | What | Status |
 |---|---|---|
-| Unit | Scoring (Pareto 32 deals, Nash 68/72), protocol transitions incl. the confirmation turn, channel routing per cell, agent validation and retries, prompts, corpus, cache, client against a mock server, `.env` loading | 107 tests passing |
+| Unit | Scoring (Pareto 32 deals, Nash 68/72), protocol transitions incl. the confirmation turn, channel routing per cell, agent validation and retries, English and Russian prompts, corpus, Russian materials checks and review sheet, cache, client against a mock server, `.env` loading | 171 tests passing |
 | End-to-end with fakes | A full negotiation for every cell × pairing; illusory agreement from a corrupting translator; timeout, walk-away, error, deal below BATNA; runner resume and crash reporting | passing |
 | A/A | C1 with an identity translator must match A1 | pilot |
 | Smoke | 1 real run per cell on the FINKI servers | Dec 1–2 |
@@ -302,7 +314,7 @@ Every adapter implements `translate(text, src, tgt) -> TranslationResult{text, s
 | Thu 26 Nov | 9. Runner: grid, parallel runs, resume | done |
 | Fri 27 – Sat 28 Nov | 5. Retrieval: BGE-M3 embeddings stored on disk, top-3 search | next |
 | Fri 27 – Mon 30 Nov | 6. Translation adapters: NLLB service, Hy-MT2, number check | next |
-| Fri 27 – Wed 2 Dec | 8. Russian drafts → reviewer → final | drafts next |
+| Fri 27 – Wed 2 Dec | 8. Russian drafts → reviewer → final | drafts and review sheet done 27 Nov; with the reviewer |
 | Mon 30 Nov – Wed 2 Dec | 7. FINKI setup: container, weights, SLURM scripts | needs access |
 | Thu 3 – Fri 4 Dec | 10. Pilot, translator comparison, freeze (git tag `v1.0-frozen`) | needs access |
 | Sat 5 – Wed 9 Dec | 11. Analysis code, written while the main runs execute | — |

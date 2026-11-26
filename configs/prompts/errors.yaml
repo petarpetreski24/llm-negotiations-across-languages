@@ -1,0 +1,23 @@
+# Why a reply was rejected, worded per instruction language. Inserted into retry.<lang>.j2.
+# Codes: src/negmt/errors.py. {field}, {issue} and {option} are JSON names and numbers;
+# {language} comes from languages.yaml ("Russian" / "на русском языке").
+en:
+  not_json: "it is not valid JSON"
+  schema: "the field \"{field}\" is missing or has the wrong type"
+  invalid_offer: "\"{field}\" must give a valid option number for each of the six issues"
+  accept_without_terms: "\"decision\" is \"accept\" but \"accepted_terms\" is null"
+  terms_without_accept: "\"accepted_terms\" must be null unless \"decision\" is \"accept\""
+  invalid_option: "\"their_offer_as_understood\" gives option {option} for \"{issue}\", which does not exist"
+  unknown_issue: "\"their_offer_as_understood\" contains a key that is not an issue"
+  empty_message: "\"message\" is empty"
+  wrong_language: "\"message\" must be written in {language}"
+ru:
+  not_json: "он не является корректным JSON"
+  schema: "поле \"{field}\" отсутствует или имеет неверный тип"
+  invalid_offer: "в поле \"{field}\" нужно указать допустимый номер варианта по каждому из шести вопросов"
+  accept_without_terms: "в поле \"decision\" указано \"accept\", но поле \"accepted_terms\" равно null"
+  terms_without_accept: "поле \"accepted_terms\" должно быть null, если в поле \"decision\" не указано \"accept\""
+  invalid_option: "в поле \"their_offer_as_understood\" для вопроса \"{issue}\" указан вариант {option}, которого не существует"
+  unknown_issue: "в поле \"their_offer_as_understood\" есть ключ, который не соответствует ни одному вопросу"
+  empty_message: "поле \"message\" пустое"
+  wrong_language: "сообщение в поле \"message\" должно быть написано {language}"

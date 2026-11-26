@@ -1,0 +1,70 @@
+# Fixed English -> Russian terms for the prompt materials (drafts until the reviewer signs off).
+# `python -m negmt.review check` warns when an English segment matches `en` but its Russian
+# segment does not match `ru` (case-insensitive regular expressions). term_en / term_ru / note
+# are what the reviewer sees in the spreadsheet's Glossary tab.
+
+# names
+- {term_en: "Aldoria, Aldorian", term_ru: "Альдория, альдорийский", en: '\bAldori', ru: 'альдори',
+   note: "Spelled with ь. After «Республика» the name stays undeclined: «Республики Альдория»."}
+- {term_en: "Veskaria, Veskarian", term_ru: "Вескария, вескарийский", en: '\bVeskari', ru: 'вескари'}
+- {term_en: "Ostra (river)", term_ru: "Остра (реки Остра, на Остре)", en: '\bOstra\b', ru: '\bОстр',
+   note: "Undeclined after «река» (реки Остра), declined on its own (из Остры, на Остре)."}
+- {term_en: "Ostra Grand Dam", term_ru: "Большая плотина на Остре", en: 'Grand Dam', ru: 'больш\w+ плотин\w* на остре',
+   note: "Alternative: «Великая плотина на Остре»."}
+
+# the six issues
+- {term_en: "reservoir", term_ru: "водохранилище", en: '\breservoirs?\b', ru: 'водохранилищ'}
+- {term_en: "filling (of the reservoir)", term_ru: "заполнение", en: '\bfill(ing|ed)?\b', ru: 'заполн'}
+- {term_en: "release (of water)", term_ru: "попуск (воды)", en: '\breleas', ru: 'попуск',
+   note: "Hydrology term for water let out of a reservoir. Alternative: «сброс воды»."}
+- {term_en: "bcm, billion cubic metres", term_ru: "млрд м³, млрд кубических метров", en: '\bbcm\b|cubic met', ru: 'м³|кубическ'}
+- {term_en: "drought", term_ru: "засуха, засушливый", en: '\bdrought', ru: 'засух|засушлив'}
+- {term_en: "wet years", term_ru: "многоводные годы", en: '\bwet years', ru: 'многоводн'}
+- {term_en: "drought clause", term_ru: "оговорка о засухе", en: 'drought clause', ru: 'оговорк\w* о засухе'}
+- {term_en: "compensation fund", term_ru: "компенсационный фонд", en: 'compensation fund', ru: 'компенсационн\w* фонд'}
+- {term_en: "compensation", term_ru: "компенсация", en: '\bcompensation', ru: 'компенсац'}
+- {term_en: "electricity", term_ru: "электроэнергия", en: '\belectricity\b', ru: 'энерг'}
+- {term_en: "at a discount, discounted", term_ru: "по льготной цене, льготный", en: '\bdiscount', ru: 'льготн'}
+- {term_en: "monitoring", term_ru: "мониторинг", en: '\bmonitoring\b', ru: 'мониторинг'}
+- {term_en: "data sharing", term_ru: "обмен данными", en: 'data sharing|sharing data', ru: 'обмен\w* данными'}
+- {term_en: "real-time", term_ru: "в режиме реального времени", en: 'real-time', ru: 'в режиме реального времени'}
+- {term_en: "joint technical commission", term_ru: "совместная техническая комиссия", en: 'joint technical commission', ru: 'совместн\w+ техническ\w+ комисси'}
+- {term_en: "international observers", term_ru: "международные наблюдатели", en: 'international observers', ru: 'международн\w+ наблюдател'}
+
+# the treaty and the joint statement
+- {term_en: "joint statement", term_ru: "совместное заявление", en: 'joint statement', ru: 'совместн\w+ заявлени'}
+- {term_en: "treaty", term_ru: "договор", en: '\btreaty\b', ru: 'договор'}
+- {term_en: "the 1929 treaty", term_ru: "договор 1929 года", en: '\b1929\b', ru: '1929 года'}
+- {term_en: "recognizes ... historical rights", term_ru: "признаёт исторические права", en: 'historical rights', ru: 'историческ\w+ прав',
+   note: "Statement option 0. Must stay clearly stronger than option 1."}
+- {term_en: "acknowledges ... historical use", term_ru: "констатирует историческое водопользование", en: 'historical use', ru: 'констатир\w+ историческ\w+ водопользовани',
+   note: "Statement option 1. UN texts often use «признаёт» for both 'recognizes' and 'acknowledges'; we need a different verb here."}
+- {term_en: "takes note of the positions", term_ru: "принимает к сведению позиции", en: 'takes? note', ru: 'принима\w+ к сведению',
+   note: "Statement option 2."}
+- {term_en: "affirms the principle", term_ru: "подтверждает принцип", en: 'affirms the principle', ru: 'подтвержда\w+ принцип',
+   note: "Statement option 3."}
+- {term_en: "equitable and reasonable utilization", term_ru: "справедливое и разумное использование", en: 'equitable and reasonable utili[sz]ation', ru: 'справедлив\w+ и разумн\w+ использовани',
+   note: "Wording of the 1997 UN Watercourses Convention (Art. 5) in its official Russian text."}
+- {term_en: "(obligation not to cause) significant harm", term_ru: "(обязательство не наносить) значительного ущерба", en: 'significant harm', ru: 'значительн\w+ ущерб',
+   note: "Convention Art. 7. As a heading: «Непричинение значительного ущерба»."}
+- {term_en: "UN Watercourses Convention", term_ru: "Конвенция ООН по водотокам", en: 'Watercourses Convention', ru: 'конвенци\w+ ООН по водотокам'}
+
+# institutions and money
+- {term_en: "International Court of Justice", term_ru: "Международный суд ООН", en: 'International Court of Justice', ru: 'международн\w+ суд\w* ООН'}
+- {term_en: "World Bank", term_ru: "Всемирный банк", en: 'World Bank', ru: 'всемирн\w+ банк'}
+- {term_en: "tranche", term_ru: "транш", en: '\btranche', ru: 'транш'}
+- {term_en: "IMF", term_ru: "МВФ", en: '\bIMF\b', ru: 'МВФ'}
+- {term_en: "bonds", term_ru: "облигации", en: '\bbonds?\b', ru: 'облигаци'}
+- {term_en: "farmers", term_ru: "фермеры", en: '\bfarmers?\b', ru: 'фермер'}
+- {term_en: "sovereignty", term_ru: "суверенитет", en: '\bsovereignty\b', ru: 'суверенитет'}
+
+# the negotiation itself
+- {term_en: "delegation", term_ru: "делегация", en: '\bdelegations?\b', ru: 'делегаци'}
+- {term_en: "talks", term_ru: "переговоры", en: '\btalks\b', ru: 'переговор'}
+- {term_en: "proposal", term_ru: "предложение", en: '\bproposals?\b', ru: 'предложени'}
+- {term_en: "concession, concede", term_ru: "уступка, уступать", en: '\bconcession|\bconcede', ru: 'уступ'}
+- {term_en: "deal", term_ru: "соглашение", en: '(?<!great )\bdeals?\b', ru: 'соглашени',
+   note: "«Соглашение» rather than «сделка», which sounds commercial."}
+- {term_en: "walk away, walk-away value", term_ru: "выход из переговоров", en: '\bwalk(ing)?[ -]away\b', ru: 'выход\w* из переговоров',
+   note: "No standard Russian term for 'walk-away value'; the prompt explains it in words."}
+- {term_en: "points (score table)", term_ru: "баллы", en: '\bpoints?\b', ru: 'балл'}

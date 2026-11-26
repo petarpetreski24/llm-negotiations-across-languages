@@ -38,6 +38,12 @@ class Role:
     name: Mapping[str, str]
     position: str
     batna: float
+    # Russian prompts need the genitive ("делегация Республики Альдория"); falls back to `name`.
+    name_gen: Mapping[str, str] = None  # type: ignore[assignment]
+
+    def __post_init__(self):
+        if self.name_gen is None:
+            object.__setattr__(self, "name_gen", dict(self.name))
 
 
 @dataclass(frozen=True)
@@ -60,7 +66,13 @@ class Scenario:
     def from_yaml(cls, path: str | Path) -> "Scenario":
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
         roles = {
-            rid: Role(id=rid, name=r["name"], position=r["position"], batna=float(r["batna"]))
+            rid: Role(
+                id=rid,
+                name=r["name"],
+                position=r["position"],
+                batna=float(r["batna"]),
+                name_gen={**r["name"], **r.get("name_gen", {})},
+            )
             for rid, r in data["roles"].items()
         }
         issues = [
@@ -79,6 +91,10 @@ class Scenario:
             raise ValueError("a bilateral scenario needs exactly two roles")
         if len(set(self.issue_ids)) != len(self.issue_ids):
             raise ValueError("duplicate issue ids")
+        for role in self.roles.values():
+            for lang in LANGS:
+                if lang not in role.name or lang not in role.name_gen:
+                    raise ValueError(f"role {role.id}: missing '{lang}' name")
         for issue in self.issues:
             for lang in LANGS:
                 if lang not in issue.label:

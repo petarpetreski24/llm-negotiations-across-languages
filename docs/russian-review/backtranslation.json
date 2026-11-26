@@ -1,0 +1,1032 @@
+{
+ "model": "Helsinki-NLP/opus-mt-ru-en",
+ "date": "2026-11-27",
+ "note": "Machine back-translation of the Russian drafts, for orientation only. chrF compares it with the English source.",
+ "segments": {
+  "scenario/roles.aldoria.name": {
+   "ru": "Республика Альдория",
+   "back": "Republic of Aldoria",
+   "chrf": 100.0
+  },
+  "scenario/roles.aldoria.name_gen": {
+   "ru": "Республики Альдория",
+   "back": "of the Republic of Aldoria",
+   "chrf": 93.5
+  },
+  "scenario/roles.veskaria.name": {
+   "ru": "Республика Вескария",
+   "back": "Republic of Vescaria",
+   "chrf": 77.2
+  },
+  "scenario/roles.veskaria.name_gen": {
+   "ru": "Республики Вескария",
+   "back": "of the Republic of Vescaria",
+   "chrf": 72.5
+  },
+  "scenario/issues.filling": {
+   "ru": "Срок заполнения водохранилища",
+   "back": "Time frame for filling of reservoir",
+   "chrf": 53.3
+  },
+  "scenario/issues.filling.0": {
+   "ru": "3 года",
+   "back": "3 years",
+   "chrf": 100.0
+  },
+  "scenario/issues.filling.1": {
+   "ru": "5 лет",
+   "back": "5 years",
+   "chrf": 100.0
+  },
+  "scenario/issues.filling.2": {
+   "ru": "7 лет",
+   "back": "7 years",
+   "chrf": 100.0
+  },
+  "scenario/issues.filling.3": {
+   "ru": "10 лет",
+   "back": "10 years",
+   "chrf": 100.0
+  },
+  "scenario/issues.filling.4": {
+   "ru": "15 лет",
+   "back": "15 years",
+   "chrf": 100.0
+  },
+  "scenario/issues.release": {
+   "ru": "Гарантированный минимальный попуск воды в засушливые годы",
+   "back": "Guaranteed minimum water intake in dry years",
+   "chrf": 56.1
+  },
+  "scenario/issues.release.0": {
+   "ru": "25 млрд м³ в год",
+   "back": "25 billion m3 per year",
+   "chrf": 49.8
+  },
+  "scenario/issues.release.1": {
+   "ru": "30 млрд м³ в год",
+   "back": "30 billion m3 per year",
+   "chrf": 49.8
+  },
+  "scenario/issues.release.2": {
+   "ru": "35 млрд м³ в год",
+   "back": "35 billion m3 per year",
+   "chrf": 49.8
+  },
+  "scenario/issues.release.3": {
+   "ru": "40 млрд м³ в год",
+   "back": "40 billion m3 per year",
+   "chrf": 49.8
+  },
+  "scenario/issues.release.4": {
+   "ru": "45 млрд м³ в год",
+   "back": "45 billion m3 per year",
+   "chrf": 49.8
+  },
+  "scenario/issues.compensation": {
+   "ru": "Компенсационный фонд для вескарийских фермеров",
+   "back": "Compensation Fund for Hungarian Farmers",
+   "chrf": 57.5
+  },
+  "scenario/issues.compensation.0": {
+   "ru": "без фонда",
+   "back": "without fund",
+   "chrf": 31.1
+  },
+  "scenario/issues.compensation.1": {
+   "ru": "100 млн долларов США",
+   "back": "$100 million",
+   "chrf": 73.5
+  },
+  "scenario/issues.compensation.2": {
+   "ru": "250 млн долларов США",
+   "back": "$250 million",
+   "chrf": 73.5
+  },
+  "scenario/issues.compensation.3": {
+   "ru": "500 млн долларов США",
+   "back": "$500 million",
+   "chrf": 73.5
+  },
+  "scenario/issues.compensation.4": {
+   "ru": "1 млрд долларов США",
+   "back": "$1 billion",
+   "chrf": 66.4
+  },
+  "scenario/issues.electricity": {
+   "ru": "Доля электроэнергии плотины, продаваемая Вескарии по льготной цене",
+   "back": "Proportion of dam power sold at concessional price",
+   "chrf": 16.0
+  },
+  "scenario/issues.monitoring": {
+   "ru": "Мониторинг и обмен данными",
+   "back": "Monitoring and data exchange",
+   "chrf": 70.8
+  },
+  "scenario/issues.monitoring.0": {
+   "ru": "без мониторинга",
+   "back": "without monitoring",
+   "chrf": 71.9
+  },
+  "scenario/issues.monitoring.1": {
+   "ru": "ежегодные отчёты",
+   "back": "Annual reports",
+   "chrf": 90.2
+  },
+  "scenario/issues.monitoring.2": {
+   "ru": "портал данных в режиме реального времени",
+   "back": "Real-time data portal",
+   "chrf": 93.9
+  },
+  "scenario/issues.monitoring.3": {
+   "ru": "совместная техническая комиссия",
+   "back": "Joint Technical Commission",
+   "chrf": 62.2
+  },
+  "scenario/issues.monitoring.4": {
+   "ru": "совместная комиссия с международными наблюдателями",
+   "back": "Joint Commission with International Observers",
+   "chrf": 69.9
+  },
+  "scenario/issues.communique": {
+   "ru": "Совместное заявление о договоре 1929 года",
+   "back": "1929 Joint declaration on the treaty",
+   "chrf": 39.2
+  },
+  "scenario/issues.communique.0": {
+   "ru": "признаёт исторические права Вескарии",
+   "back": "Acknowledges the historical rights of Vescaria",
+   "chrf": 50.4
+  },
+  "scenario/issues.communique.1": {
+   "ru": "констатирует историческое водопользование Вескарии",
+   "back": "Acknowledges the historic water use of Vescaria",
+   "chrf": 49.5
+  },
+  "scenario/issues.communique.2": {
+   "ru": "принимает к сведению позиции обеих сторон",
+   "back": "Takes note of the positions of both sides",
+   "chrf": 78.9
+  },
+  "scenario/issues.communique.3": {
+   "ru": "подтверждает принцип справедливого и разумного использования",
+   "back": "Reaffirms the principle of equitable and reasonable utilization",
+   "chrf": 99.2
+  },
+  "scenario/issues.communique.4": {
+   "ru": "без упоминания договора",
+   "back": "without reference to the treaty",
+   "chrf": 86.0
+  },
+  "prompts/system:L1": {
+   "ru": "Вы — глава делегации {{ country_gen }} на экстренных переговорах по реке Остра.",
+   "back": "You are the head of the [X] delegation to the emergency talks on the Ostra River.",
+   "chrf": 84.0
+  },
+  "prompts/system:L3": {
+   "ru": "# Обстановка",
+   "back": "# The situation",
+   "chrf": 67.9
+  },
+  "prompts/system:L6": {
+   "ru": "# Ваш стиль ведения переговоров",
+   "back": "# Your negotiating style",
+   "chrf": 100.0
+  },
+  "prompts/system:L9": {
+   "ru": "# Ваша конфиденциальная таблица баллов",
+   "back": "# Your confidential scoreboard",
+   "chrf": 29.0
+  },
+  "prompts/system:L10": {
+   "ru": "Эту таблицу видите только вы. В ней указано, сколько баллов стоит каждый вариант для {{ country_gen }}. Оценка соглашения равна сумме баллов шести входящих в него вариантов (максимум 100).",
+   "back": "This table only shows you how much each option costs for [X]. The assessment of the agreement is equal to the sum of the points of the six options in it (maximum 100).",
+   "chrf": 53.1
+  },
+  "prompts/system:L12": {
+   "ru": "{{ loop.index }}. {{ issue.label }} (ключ \"{{ issue.id }}\")",
+   "back": "[X]. [X] (key \"[X]])",
+   "chrf": 87.0
+  },
+  "prompts/system:L14": {
+   "ru": "   - вариант {{ opt.id }}: {{ opt.label }} — {{ opt.points }} {{ opt.points | plural_ru(\"балл\", \"балла\", \"баллов\") }}",
+   "back": "- Option [X]: [X] - [X] [X]",
+   "chrf": 50.2
+  },
+  "prompts/system:L17": {
+   "ru": "Если соглашение не будет достигнуто, {{ country }} получит {{ batna }} {{ batna | plural_ru(\"балл\", \"балла\", \"баллов\") }} — столько для неё стоит выход из переговоров без соглашения. Принимайте только такие условия, которые, по вашей оценке, выгоднее для вашей страны, чем выход из переговоров.",
+   "back": "If an agreement is not reached, [X] will receive [X] [X] — so much is it worth to get out of the negotiations without the agreement; accept only those conditions that you estimate are more beneficial to your country than to get out of the negotiations.",
+   "chrf": 34.4
+  },
+  "prompts/system:L18": {
+   "ru": "Никогда не раскрывайте точные значения баллов. Свои приоритеты вы можете описывать своими словами.",
+   "back": "Never reveal the exact values of points. You can describe your priorities in your own words.",
+   "chrf": 75.2
+  },
+  "prompts/system:L20": {
+   "ru": "# Правила переговоров",
+   "back": "# Rules of negotiation",
+   "chrf": 42.1
+  },
+  "prompts/system:L21": {
+   "ru": "- Делегации выступают по очереди. Каждая делегация может отправить не более {{ max_rounds }} {{ max_rounds | plural_ru(\"сообщения\", \"сообщений\", \"сообщений\") }}. Если после этого соглашение не достигнуто, переговоры завершаются без соглашения.",
+   "back": "- Delegations speak in turn. Each delegation may send no more than [X] [X]. If no agreement is reached thereafter, the negotiations shall be concluded without agreement.",
+   "chrf": 55.7
+  },
+  "prompts/system:L22": {
+   "ru": "- В каждом сообщении простыми словами излагайте своё текущее полное предложение по всем шести вопросам и поясняйте или обосновывайте его.",
+   "back": "- In each message, simply state your current full proposal on all six questions and explain or justify it.",
+   "chrf": 53.4
+  },
+  "prompts/system:L23": {
+   "ru": "- Чтобы принять условия, укажите в поле \"decision\" значение \"accept\", внесите в поле \"accepted_terms\" именно те условия, которые вы принимаете (как правило, последнее предложение другой делегации), и ясно скажите в своём сообщении, что вы принимаете условия и какие именно.",
+   "back": "In order to accept the conditions, state in the \"deception\" field the value of \"accept\", add to the \"accepted_terms\" the exact conditions you accept (usually the last sentence of another delegation) and make it clear in your message that you accept the conditions and which ones.",
+   "chrf": 54.1
+  },
+  "prompts/system:L24": {
+   "ru": "- Соглашение считается заключённым, только когда обе делегации приняли одни и те же условия. Если другая делегация только что приняла условия, вы заключаете соглашение, приняв те же условия; если вы хотите что-то изменить, вместо этого внесите новое предложение.",
+   "back": "- The agreement is considered to be concluded only when both delegations have accepted the same terms. If the other delegation has just accepted the terms, you will conclude the agreement by accepting the same terms; if you want to change something, introduce a new proposal instead.",
+   "chrf": 81.9
+  },
+  "prompts/system:L25": {
+   "ru": "- Вы можете покинуть переговоры, указав в поле \"decision\" значение \"walk_away\".",
+   "back": "- You can leave the negotiations by indicating the value of \"walk_away\" in the \"decision\" field.",
+   "chrf": 48.4
+  },
+  "prompts/system:L26": {
+   "ru": "- Каждое сообщение должно быть короче 150 слов. Пишите его так, как дипломат обращается к другой делегации.",
+   "back": "Each message should be shorter than 150 words, and write it as a diplomat addresses another delegation.",
+   "chrf": 57.2
+  },
+  "prompts/system:L28": {
+   "ru": "# Ваш ответ",
+   "back": "# Your answer",
+   "chrf": 32.1
+  },
+  "prompts/system:L29": {
+   "ru": "Ответьте одним JSON-объектом без какого-либо другого текста:",
+   "back": "Answer one JSON object without any other text:",
+   "chrf": 34.2
+  },
+  "prompts/system:L30": {
+   "ru": "- \"message\": ваше сообщение для другой делегации, написанное {{ dialog_language }}.",
+   "back": "- \"message\": Your message to another delegation, written by [X].",
+   "chrf": 75.6
+  },
+  "prompts/system:L31": {
+   "ru": "- \"my_offer\": ваше текущее полное предложение: для каждого вопроса — номер варианта под ключом этого вопроса.",
+   "back": "- \"my_offer\": your current full proposal: for each question, the option number under this question.",
+   "chrf": 61.2
+  },
+  "prompts/system:L32": {
+   "ru": "- \"their_offer_as_understood\": последнее предложение другой делегации в вашем понимании, в виде номеров вариантов (null по вопросам, по которым она не высказалась ясно, или по всем вопросам, пока она ещё не выступала).",
+   "back": "- \"their_offer_as_underside\": the last sentence of another delegation in your understanding, in the form of options numbers (null on matters on which it was not clear or on all issues until it has spoken).",
+   "chrf": 49.9
+  },
+  "prompts/system:L33": {
+   "ru": "- \"decision\": \"continue\" (продолжить переговоры), \"accept\" (принять условия) или \"walk_away\" (выйти из переговоров).",
+   "back": "- \"decision\": \"Continue\" (to continue negotiations), \"accept\" (to accept terms) or \"walk_away\" (to withdraw from negotiations).",
+   "chrf": 60.8
+  },
+  "prompts/system:L34": {
+   "ru": "- \"accepted_terms\": номера принимаемых вами вариантов, если в поле \"decision\" указано \"accept\"; в противном случае null.",
+   "back": "- \"accepted_terms\": the number of the options you accept if the field of \"decision\" indicates \"accept\"; otherwise null.",
+   "chrf": 78.3
+  },
+  "prompts/system:L35": {
+   "ru": "- \"plan\": личная заметка для себя, не более 40 слов, на русском языке. Другая делегация её никогда не увидит.",
+   "back": "- \"plan\": a personal note for yourself, not more than 40 words, in Russian, another delegation will never see it.",
+   "chrf": 54.4
+  },
+  "prompts/turn:L2": {
+   "ru": "Ваша делегация использовала все {{ max_rounds }} {{ max_rounds | plural_ru(\"сообщение\", \"сообщения\", \"сообщений\") }}. Другая делегация только что приняла условия: вы можете заключить соглашение, приняв те же условия; в противном случае переговоры завершатся без соглашения.",
+   "back": "Your delegation used all [X] [X]. Another delegation has just accepted the terms: you can conclude an agreement by accepting the same terms; otherwise, negotiations will be concluded without agreement.",
+   "chrf": 66.7
+  },
+  "prompts/turn:L4": {
+   "ru": "Сообщение {{ round_no }} из {{ max_rounds }} для вашей делегации.",
+   "back": "Message [X] from [X] to your delegation.",
+   "chrf": 71.4
+  },
+  "prompts/turn:L7": {
+   "ru": "Выдержки из ваших справочных материалов, относящиеся к делу:",
+   "back": "Extracts from your background material relevant to the case:",
+   "chrf": 41.4
+  },
+  "prompts/turn:L13": {
+   "ru": "Вы открываете переговоры. Внесите своё первое предложение.",
+   "back": "You open the negotiations, make your first offer.",
+   "chrf": 49.5
+  },
+  "prompts/turn:L15": {
+   "ru": "Последнее сообщение другой делегации:",
+   "back": "Last report of another delegation:",
+   "chrf": 44.6
+  },
+  "prompts/turn:L18": {
+   "ru": "Ответьте только JSON-объектом.",
+   "back": "Answer only the JSON target.",
+   "chrf": 28.8
+  },
+  "prompts/retry:L1": {
+   "ru": "Ваш предыдущий ответ не может быть использован: {{ error }}. Ответьте ещё раз одним корректным JSON-объектом, соблюдая приведённые выше правила.",
+   "back": "Your previous answer cannot be used: [X]. Answer once again with one correct JSON object, following the above rules.",
+   "chrf": 64.3
+  },
+  "prompts/errors:not_json": {
+   "ru": "он не является корректным JSON",
+   "back": "It's not the correct JSON.",
+   "chrf": 21.6
+  },
+  "prompts/errors:schema": {
+   "ru": "поле \"{field}\" отсутствует или имеет неверный тип",
+   "back": "\"{field}\" field missing or incorrect",
+   "chrf": 42.4
+  },
+  "prompts/errors:invalid_offer": {
+   "ru": "в поле \"{field}\" нужно указать допустимый номер варианта по каждому из шести вопросов",
+   "back": "In the field of {field}, please specify the acceptable option number for each of the six questions.",
+   "chrf": 54.8
+  },
+  "prompts/errors:accept_without_terms": {
+   "ru": "в поле \"decision\" указано \"accept\", но поле \"accepted_terms\" равно null",
+   "back": "in the field \"decision\" says \"accept\", but the field \"accepted_terms\" equals null",
+   "chrf": 65.4
+  },
+  "prompts/errors:terms_without_accept": {
+   "ru": "поле \"accepted_terms\" должно быть null, если в поле \"decision\" не указано \"accept\"",
+   "back": "The field \"accepted_terms\" shall be null if the field \"decision\" does not specify \"accept\"",
+   "chrf": 57.3
+  },
+  "prompts/errors:invalid_option": {
+   "ru": "в поле \"their_offer_as_understood\" для вопроса \"{issue}\" указан вариант {option}, которого не существует",
+   "back": "In the field \"their_offer_as_underside\" for the question \"{issue}\" there is an option {action} that does not exist",
+   "chrf": 58.5
+  },
+  "prompts/errors:unknown_issue": {
+   "ru": "в поле \"their_offer_as_understood\" есть ключ, который не соответствует ни одному вопросу",
+   "back": "There's a key in the \"their_offer_as_underside\" field that doesn't match any question.",
+   "chrf": 49.9
+  },
+  "prompts/errors:empty_message": {
+   "ru": "поле \"message\" пустое",
+   "back": "\"message\" field empty",
+   "chrf": 62.8
+  },
+  "prompts/errors:wrong_language": {
+   "ru": "сообщение в поле \"message\" должно быть написано {language}",
+   "back": "The message in the \"message\" field should be written {language}",
+   "chrf": 63.1
+  },
+  "personas/dove:P1": {
+   "ru": "Вы — опытный и прагматичный карьерный дипломат. Вы стремитесь к прочному соглашению, которое каждая из сторон сможет отстоять у себя в стране. Вы стараетесь понять, что важнее всего для другой делегации, ищете компромиссы, при которых каждая сторона получает то, что ценит больше всего, и отвечаете уступками на уступки. Вы твёрдо отстаиваете ключевые интересы своей страны, но сохраняете вежливый и конструктивный тон и предпочитаете объяснять свои доводы, а не выдвигать требования.",
+   "back": "You're an experienced and pragmatic career diplomat, you're looking for a lasting agreement that each party can stand in its own country, you're trying to understand what's most important for the other delegation, you're looking for compromises in which each side gets what it values best, and you're willing to make concessions, you're firm in your country's key interests, but you keep a polite and constructive tone and you prefer to explain your arguments rather than to make demands.",
+   "chrf": 55.0
+  },
+  "personas/hawk:P1": {
+   "ru": "Вы — жёсткий переговорщик, на которого у себя в стране оказывают сильное давление. Вы начинаете с амбициозных требований и уступаете медленно, сдавая позиции только тогда, когда другая делегация что-то даёт взамен. Вы говорите твёрдо и убеждённо, апеллируете к суверенитету, истории и национальному достоинству своей страны и не скрываете недовольства предложениями, которые считаете неприемлемыми. Вы можете предупредить другую делегацию о последствиях провала, например о передаче спора в международный суд или о приостановке сотрудничества, но никогда не угрожаете применением силы. Несмотря на свою жёсткость, вы хотите достичь соглашения, если оно защищает жизненно важные интересы вашей страны, и знаете, что уход без соглашения тоже имеет свою цену.",
+   "back": "You're a hard-core negotiator who's under a lot of pressure in your country. You start with ambitious demands and give up slowly, giving up only when another delegation gives something in return. You speak firm and convincingly, you appeal to the sovereignty, history and national dignity of your country, and you don't hide your dissatisfaction with proposals that you find unacceptable. You can warn another delegation about the consequences of failure, such as bringing a dispute to an international court or suspending cooperation, but you never threaten to use force. Despite your hardness, you want to reach an agreement if it protects the vital interests of your country, and you know that leaving without an agreement also has a price.",
+   "chrf": 74.0
+  },
+  "roles/aldoria:P1": {
+   "ru": "Вы представляете Республику Альдория — горную страну в верхнем течении реки Остра. Альдория почти завершила строительство Большой плотины на Остре. Этот гидроэнергетический проект мощностью 5 гигаватт — крупнейшая инвестиция в истории страны и символ национальной гордости; более миллиона граждан купили облигации, чтобы его профинансировать. Правительство объявило, что заполнение водохранилища начнётся через тридцать дней.",
+   "back": "You represent the Republic of Aldoria, a mountain country in the upper Ostra River. Aldoria has almost completed the construction of the Great Dam on Austra. This 5 gigawatt hydropower project is the largest investment in the country's history and a symbol of national pride. More than a million citizens have bought bonds to finance it. The government has announced that filling the reservoir will start in thirty days.",
+   "chrf": 79.6
+  },
+  "roles/aldoria:P2": {
+   "ru": "Ниже по течению расположена Республика Вескария, которая получает из Остры большую часть своей пресной воды и уже третий год страдает от засухи. Она ссылается на договор 1929 года, заключённый в период колониального управления без согласия Альдории, который закрепил за Вескарией большую часть стока реки и право вето на строительство выше по течению. Альдория никогда не признавала этот договор.",
+   "back": "Below the current is the Republic of Vescaria, which receives most of its fresh water from the island and has been suffering from drought for the third year. It refers to a 1929 treaty concluded during colonial rule without Aldoria's consent, which established most of Vescaria's flow and the right of veto to build upstream. Aldoria has never recognized that treaty.",
+   "chrf": 54.4
+  },
+  "roles/aldoria:P3": {
+   "ru": "Региональная организация созвала экстренные переговоры между двумя делегациями. Вескария заявляет, что в случае их провала передаст спор в Международный суд ООН и заморозит двустороннюю торговлю, а Всемирный банк может не выделить следующий транш финансирования плотины. В обеих странах в течение шести месяцев пройдут выборы.",
+   "back": "The regional organization has convened urgent negotiations between the two delegations, and the Vescaria states that if they fail, it will refer the dispute to the United Nations International Court of Justice and freeze bilateral trade, and the World Bank may not allocate the following tranche of financing for the dam; elections will be held in both countries within six months.",
+   "chrf": 72.4
+  },
+  "roles/aldoria:P4": {
+   "ru": "На переговорах обсуждаются шесть вопросов: скорость заполнения водохранилища, минимальный попуск воды, гарантированный Вескарии в засушливые годы, компенсационный фонд для вескарийских фермеров, доля электроэнергии плотины, продаваемая Вескарии по льготной цене, мониторинг и обмен данными, а также формулировка совместного заявления о договоре 1929 года.",
+   "back": "Six issues are discussed in the negotiations: the speed of filling the reservoir, the minimum water intake guaranteed by the Vescaria in the dry years, the compensation fund for the Hungarian farmers, the share of the electricity of the dam sold by the Vescaria at a preferential price, monitoring and data exchange, and the wording of the 1929 joint declaration of the Treaty.",
+   "chrf": 58.9
+  },
+  "roles/veskaria:P1": {
+   "ru": "Вы представляете Республику Вескария — засушливую страну в нижнем течении реки Остра. Остра обеспечивает около 85 процентов пресной воды Вескарии, в сельском хозяйстве занята почти треть рабочей силы, а страна уже третий год страдает от засухи, и фермеры проводят протесты в столице. Выше по течению Республика Альдория почти завершила строительство Большой плотины на Остре — гидроэнергетического проекта мощностью 5 гигаватт — и объявила, что заполнение водохранилища начнётся через тридцать дней.",
+   "back": "You represent the Republic of Vescaria, a dry country in the lower Ostra River, which provides about 85 per cent of the freshwater of Vescaria, employs almost one third of the labour force in agriculture, and the country has been suffering from drought for the third year, and farmers are protesting in the capital.",
+   "chrf": 44.4
+  },
+  "roles/veskaria:P2": {
+   "ru": "Вескария опирается на договор 1929 года, заключённый в период колониального управления, который признал за Вескарией большую часть стока реки и предоставил ей право вето на строительство выше по течению. Альдория никогда не признавала этот договор и называет его колониальным пережитком. Парламент Вескарии объявил плотину экзистенциальной угрозой для нации.",
+   "back": "The Vescaria is based on a 1929 treaty concluded during colonial rule, which recognized Vescaria as the largest part of the river's runoff and gave it the right of veto to build upstream. Aldoria never recognized the treaty and called it a colonial remnant.",
+   "chrf": 42.5
+  },
+  "roles/veskaria:P3": {
+   "ru": "Региональная организация созвала экстренные переговоры между двумя делегациями. В случае их провала Вескария готова передать спор в Международный суд ООН и заморозить двустороннюю торговлю, хотя судебное разбирательство заняло бы годы, а засуха тем временем продолжается. В обеих странах в течение шести месяцев пройдут выборы.",
+   "back": "The regional organization had convened urgent negotiations between the two delegations, and if they failed, Vescariya was prepared to refer the dispute to the United Nations International Court of Justice and freeze bilateral trade, although the trial would take years and the drought would continue, and elections would be held in both countries within six months.",
+   "chrf": 72.2
+  },
+  "roles/veskaria:P4": {
+   "ru": "На переговорах обсуждаются шесть вопросов: скорость заполнения водохранилища, минимальный попуск воды, гарантированный Вескарии в засушливые годы, компенсационный фонд для вескарийских фермеров, доля электроэнергии плотины, продаваемая Вескарии по льготной цене, мониторинг и обмен данными, а также формулировка совместного заявления о договоре 1929 года.",
+   "back": "Six issues are discussed in the negotiations: the speed of filling the reservoir, the minimum water intake guaranteed by the Vescaria in the dry years, the compensation fund for the Hungarian farmers, the share of the electricity of the dam sold by the Vescaria at a preferential price, monitoring and data exchange, and the wording of the 1929 joint declaration of the Treaty.",
+   "chrf": 58.9
+  },
+  "corpora/aldoria/01-dam-project:T": {
+   "ru": "Большая плотина на Остре",
+   "back": "Big dam on Austree.",
+   "chrf": 12.9
+  },
+  "corpora/aldoria/01-dam-project:H1": {
+   "ru": "Проект",
+   "back": "Draft",
+   "chrf": 4.4
+  },
+  "corpora/aldoria/01-dam-project:P1": {
+   "ru": "Большая плотина на Остре — это гидроэлектростанция мощностью 5 гигаватт с водохранилищем объёмом 74 млрд кубических метров. Её стоимость составила 6,8 млрд долларов США, из которых 1,9 млрд долларов США были привлечены за счёт облигаций, купленных более чем миллионом граждан Альдории. Строительство завершено на 97 процентов. Для большинства альдорийцев плотина — величайшее достижение страны со времён обретения независимости и доказательство того, что Альдория способна сама определять своё будущее.",
+   "back": "A large dam on Ostre is a 5 gigawatt hydroelectric plant with a storage capacity of 74 billion cubic metres, worth $6.8 billion, of which $1.9 billion was raised from bonds purchased by more than a million citizens of Aldoria; construction is 97 per cent complete; for most Aldoria, the dam has been the greatest achievement of the country since independence and proof that Aldoria is capable of determining its own future.",
+   "chrf": 67.5
+  },
+  "corpora/aldoria/01-dam-project:H2": {
+   "ru": "Почему важна скорость заполнения",
+   "back": "Why the Speed of Filling",
+   "chrf": 32.9
+  },
+  "corpora/aldoria/01-dam-project:P2": {
+   "ru": "За каждый год, пока водохранилище не заполнено, Альдория теряет примерно 400 млн долларов США выручки от продажи электроэнергии, а выплаты по облигациям откладываются. Министерство финансов предупреждает, что срок заполнения более семи лет вынудит пересмотреть условия облигаций. Трёхлетний срок заполнения технически осуществим, и именно такой срок правительство пообещало обществу.",
+   "back": "In each year, before the reservoir is filled, Aldoria loses about $400 million of the proceeds from the sale of electricity, and bonds are deferred, and the Treasury Department warns that the deadline for filling more than seven years will force a review of the terms of the bonds. The three-year time limit for filling is technically feasible, and that is what the government has promised society.",
+   "chrf": 57.2
+  },
+  "corpora/aldoria/02-energy-surplus:T": {
+   "ru": "Электроэнергетический баланс Альдории",
+   "back": "Aldoria &apos; s electricity balance",
+   "chrf": 81.8
+  },
+  "corpora/aldoria/02-energy-surplus:H1": {
+   "ru": "От дефицита к избытку",
+   "back": "From deficit to surplus",
+   "chrf": 45.0
+  },
+  "corpora/aldoria/02-energy-surplus:P1": {
+   "ru": "Сегодня более 40 процентов домохозяйств Альдории регулярно сталкиваются с отключениями электроэнергии, а страна импортирует электроэнергию по высокой цене. Когда плотина выйдет на полную мощность, Альдория по меньшей мере в течение десятилетия будет производить гораздо больше электроэнергии, чем сможет потребить: пока не будут построены новые промышленные предприятия, национальная энергосистема сможет принимать лишь около половины выработки плотины.",
+   "back": "Today, more than 40 per cent of Aldoria &apos; s households regularly experience power outages and the country imports electricity at a high price. When the dam reaches full capacity, Aldoria will produce at least more electricity within a decade than it can consume: until new industrial plants are built, the national power system will be able to absorb only about half of the dam &apos; s production.",
+   "chrf": 66.1
+  },
+  "corpora/aldoria/02-energy-surplus:H2": {
+   "ru": "Варианты экспорта",
+   "back": "Export options",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/02-energy-surplus:P2": {
+   "ru": "Единственный крупный покупатель избытка электроэнергии поблизости — Вескария, которая уже импортирует электроэнергию по высоким ценам. Продажа Вескарии части выработки по льготной цене обошлась бы Альдории относительно недорого, поскольку альтернатива — оставить турбины простаивать. Специалисты по энергетическому планированию считают льготный экспорт дешёвым способом заручиться доброй волей, однако оппозиция обрушилась бы с критикой на любой «подарок» для Вескарии.",
+   "back": "The only major buyer of electricity surplus in the vicinity is Vescaria, who already imports electricity at high prices. The sale of a part of the output at a concessional price would cost Aldoria relatively low because the alternative is to keep turbines cold. Energy planners consider concessional exports to be a cheap way to gain goodwill, but the opposition would be criticized for any \"gift\" for Vescaria.",
+   "chrf": 64.1
+  },
+  "corpora/aldoria/03-public-finances:T": {
+   "ru": "Государственные финансы",
+   "back": "Public finance",
+   "chrf": 92.8
+  },
+  "corpora/aldoria/03-public-finances:H1": {
+   "ru": "Бюджет под давлением",
+   "back": "Pressure budget",
+   "chrf": 27.6
+  },
+  "corpora/aldoria/03-public-finances:P1": {
+   "ru": "Альдория второй год выполняет программу МВФ. Дефицит бюджета должен снизиться до уровня ниже 3 процентов ВВП, а финансовый комитет парламента в этом году заблокировал все новые статьи расходов.",
+   "back": "Aldoria is in the second year of the IMF programme, and the budget deficit is expected to fall below 3 per cent of GDP, and this year &apos; s fiscal committee of Parliament has blocked all new spending items.",
+   "chrf": 72.7
+  },
+  "corpora/aldoria/03-public-finances:H2": {
+   "ru": "Денежная компенсация",
+   "back": "Monetary compensation",
+   "chrf": 66.9
+  },
+  "corpora/aldoria/03-public-finances:P2": {
+   "ru": "Любой денежный компенсационный фонд для вескарийских фермеров пришлось бы финансировать за счёт заимствований, и для его создания потребовалось бы голосование в парламенте. Министр финансов в частном порядке заявил, что даже 250 млн долларов США провести через парламент будет очень трудно, а 1 млрд долларов США — невозможно. Денежные выплаты — самая болезненная уступка, на которую могла бы пойти Альдория; уступки в натуральной форме, например в виде электроэнергии или гарантий по воде, защитить гораздо легче.",
+   "back": "Any monetary compensation fund for the Hungarian farmers would have to be financed by borrowing and would have required a vote in Parliament; the Minister of Finance privately stated that even $250 million would be difficult to administer through Parliament and $1 billion would not be possible; cash payments were the most painful concession that Aldoria could make; concessions in kind, such as electricity or water guarantees, would be much easier to protect.",
+   "chrf": 68.5
+  },
+  "corpora/aldoria/04-hydrology-study:T": {
+   "ru": "Альдорийский институт гидрологии: исследование засухи",
+   "back": "Aldorian Institute of Hydrological Sciences: Drought Research",
+   "chrf": 68.3
+  },
+  "corpora/aldoria/04-hydrology-study:H1": {
+   "ru": "Выводы",
+   "back": "Conclusions",
+   "chrf": 7.8
+  },
+  "corpora/aldoria/04-hydrology-study:P1": {
+   "ru": "В среднем Остра несёт на границе 84 млрд кубических метров воды в год, а в годы сильной засухи — около 55 млрд. Институт делает вывод, что в засушливый год Альдория может обеспечивать попуск до 35 млрд кубических метров без существенного влияния на выработку электроэнергии. Попуск в 45 млрд сократил бы выработку электроэнергии в засушливые годы примерно на 12 процентов.",
+   "back": "On average, Ostra carries 84 billion cubic metres of water per year at the border and about 55 billion in years of severe drought. The Institute concludes that in the dry year Aldoria can deliver up to 35 billion cubic metres without having a significant impact on electricity production.",
+   "chrf": 55.1
+  },
+  "corpora/aldoria/04-hydrology-study:H2": {
+   "ru": "Критика вескарийских данных",
+   "back": "Criticism of the Hungarian data",
+   "chrf": 46.0
+  },
+  "corpora/aldoria/04-hydrology-study:P2": {
+   "ru": "Институт утверждает, что заявление Вескарии о потребности как минимум в 40 млрд кубических метров не учитывает 30 процентов воды, которые Вескария теряет в старых каналах. Улучшение орошения позволило бы Вескарии сэкономить больше воды, чем плотина когда-либо задержит.",
+   "back": "The Institute argues that the Vescaria statement of a need of at least 40 billion cubic metres does not take into account 30 per cent of the water that Vescaria is losing in the old canals; improved irrigation would have saved Vescaria more water than the dam would ever delay.",
+   "chrf": 58.2
+  },
+  "corpora/aldoria/05-legal-position:T": {
+   "ru": "Правовая позиция",
+   "back": "Legal position",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/05-legal-position:H1": {
+   "ru": "Справедливое и разумное использование",
+   "back": "Equitable and reasonable utilization",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/05-legal-position:P1": {
+   "ru": "Юристы Альдории опираются на принцип справедливого и разумного использования, закреплённый в Конвенции ООН по водотокам: каждая страна, по территории которой протекает общая река, имеет право на справедливую долю приносимых ею выгод. Почти вся вода Остры поступает с гор Альдории, однако сама Альдория её почти не использовала.",
+   "back": "The lawyers of Aldoria are based on the principle of equitable and reasonable utilization enshrined in the United Nations Watercourses Convention: every country on whose territory a common river runs is entitled to a fair share of its benefits; almost all of Ostrov's water comes from the mountains of Aldoria, but Aldoria himself has hardly used it.",
+   "chrf": 66.7
+  },
+  "corpora/aldoria/05-legal-position:H2": {
+   "ru": "Непричинение значительного ущерба",
+   "back": "No significant damage",
+   "chrf": 72.0
+  },
+  "corpora/aldoria/05-legal-position:P2": {
+   "ru": "Вескария будет ссылаться на обязательство не наносить значительного ущерба. Альдория отвечает, что ущерб необходимо соизмерять с выгодами от плотины, что гарантированный попуск в засушливые годы предотвращает значительный ущерб и что договор 1929 года не имеет для Альдории юридической силы, поскольку Альдория его никогда не подписывала.",
+   "back": "The Vescaria will invoke the obligation not to cause significant harm, and Aldoria answers that the damage must be measured against the benefits of the dam, that the guaranteed entry in the dry years prevents significant damage and that the 1929 treaty has no legal effect for Aldoria, since Aldoria has never signed it.",
+   "chrf": 73.4
+  },
+  "corpora/aldoria/06-treaty-1929:T": {
+   "ru": "Договор 1929 года и совместное заявление",
+   "back": "1929 Treaty and Joint Statement",
+   "chrf": 48.3
+  },
+  "corpora/aldoria/06-treaty-1929:H1": {
+   "ru": "История",
+   "back": "History",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/06-treaty-1929:P1": {
+   "ru": "Договор 1929 года подписали колониальная администрация, управлявшая тогда Вескарией, и иностранная держава, действовавшая от имени территории Альдории. Ни один альдориец в этом не участвовал. Договор закрепил за Вескарией большую часть стока Остры и предоставил ей право вето на строительство выше по течению. Все правительства Альдории со времён обретения независимости отвергали его.",
+   "back": "The 1929 Treaty was signed by the colonial administration that ruled the then Vescaria and a foreign Power acting on behalf of the territory of Aldoria, and no Aldorian was involved in it; the Treaty established the bulk of the Ostria water and gave it the right of veto to build upstream; all Aldoria's governments have rejected it since independence.",
+   "chrf": 59.5
+  },
+  "corpora/aldoria/06-treaty-1929:H2": {
+   "ru": "Формулировка совместного заявления",
+   "back": "Formulation of the joint statement",
+   "chrf": 70.9
+  },
+  "corpora/aldoria/06-treaty-1929:P2": {
+   "ru": "Заявление, которое «признаёт исторические права Вескарии», было бы внутри страны политически взрывоопасным и могло бы быть использовано против Альдории в суде. Формулировка «констатирует историческое водопользование Вескарии» лишь немногим менее опасна. Предпочтительная для Альдории формулировка — та, которая «подтверждает принцип справедливого и разумного использования»; полностью исключить упоминание договора также приемлемо, а формулировка «принимает к сведению позиции обеих сторон» — терпимый компромисс.",
+   "back": "A statement that \"recognizes the historical rights of Vescaria\" would be politically explosive domestically and could be used against Aldoria in court. The phrase \"conforms the historical water use of the Vescaria\" is only slightly less dangerous. The preferred formulation for Aldoria is one that \"confirms the principle of equitable and reasonable utilization\"; the deletion of the reference to the treaty in its entirety is also acceptable, and the phrase \"takes note of the positions of both sides\" is a tolerant compromise.",
+   "chrf": 73.2
+  },
+  "corpora/aldoria/07-world-bank:T": {
+   "ru": "Финансирование Всемирного банка",
+   "back": "Financing of the World Bank",
+   "chrf": 72.2
+  },
+  "corpora/aldoria/07-world-bank:H1": {
+   "ru": "Второй транш",
+   "back": "Second tranche",
+   "chrf": 73.2
+  },
+  "corpora/aldoria/07-world-bank:P1": {
+   "ru": "Всемирный банк одобрил выделение 1,1 млрд долларов США на линии электропередачи от плотины; эти средства должны быть предоставлены вторым траншем. Их выделение обусловлено заключением трансграничного соглашения, предусматривающего заслуживающий доверия совместный механизм мониторинга реки и обмена данными.",
+   "back": "The World Bank has approved $1.1 billion in electricity lines from the dam, which should be provided by a second tranche, based on a cross-border agreement with a credible joint river monitoring and data exchange mechanism.",
+   "chrf": 48.8
+  },
+  "corpora/aldoria/07-world-bank:H2": {
+   "ru": "Что считается заслуживающим доверия",
+   "back": "What is believed to be credible",
+   "chrf": 39.4
+  },
+  "corpora/aldoria/07-world-bank:P2": {
+   "ru": "Сотрудники Всемирного банка неофициально дали понять, что этому условию отвечала бы совместная техническая комиссия с равным представительством и общим доступом к данным о стоке. Ежегодных отчётов или одного лишь портала данных, скорее всего, будет недостаточно. Националисты в парламенте решительно выступают против международных наблюдателей на альдорийской земле, считая это посягательством на суверенитет.",
+   "back": "The World Bank officials have informally made it clear that this condition would be met by a joint technical commission with equal representation and general access to data on runoff; annual reports or a data portal alone are likely to be insufficient; nationalists in Parliament are strongly opposed to international observers on Aldorian land, considering it an infringement of sovereignty.",
+   "chrf": 67.8
+  },
+  "corpora/aldoria/08-domestic-politics:T": {
+   "ru": "Внутренняя политика",
+   "back": "Domestic policy",
+   "chrf": 74.2
+  },
+  "corpora/aldoria/08-domestic-politics:H1": {
+   "ru": "Выборы через шесть месяцев",
+   "back": "Elections after six months",
+   "chrf": 70.7
+  },
+  "corpora/aldoria/08-domestic-politics:P1": {
+   "ru": "Правящая коалиция отстаёт в опросах от националистической оппозиции. Оппозиция обвиняет правительство в готовности «продать плотину» Вескарии и требует, чтобы водохранилище было заполнено по графику без какого-либо иностранного вмешательства.",
+   "back": "The ruling coalition lags behind in polls from the nationalist opposition, the opposition accuses the government of being willing to \"sell the dam\" of Veskariya and demands that the reservoir be filled on schedule without any foreign interference.",
+   "chrf": 77.6
+  },
+  "corpora/aldoria/08-domestic-politics:H2": {
+   "ru": "Что нужно правительству",
+   "back": "What the Government Needs",
+   "chrf": 63.2
+  },
+  "corpora/aldoria/08-domestic-politics:P2": {
+   "ru": "Премьер-министру нужно соглашение, которое можно представить как победу: заполнение водохранилища плотины по графику, никаких денежных выплат Вескарии, никакого признания договора 1929 года и никаких иностранных инспекторов. Соглашение, которое к тому же обеспечит получение средств Всемирного банка и новые экспортные доходы, деловые круги встретили бы с одобрением.",
+   "back": "The Prime Minister needs an agreement that can be described as a victory: filling the dam's reservoir according to schedule, no cash payments to the Vescaria, no recognition of the 1929 treaty, and no foreign inspectors, and an agreement that would also secure World Bank funds and new export revenues would be welcomed by the business community.",
+   "chrf": 71.5
+  },
+  "corpora/aldoria/09-veskaria-profile:T": {
+   "ru": "Что нам известно о Вескарии",
+   "back": "What do we know about Vescaria?",
+   "chrf": 69.0
+  },
+  "corpora/aldoria/09-veskaria-profile:H1": {
+   "ru": "Вода и сельское хозяйство",
+   "back": "Water and agriculture",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/09-veskaria-profile:P1": {
+   "ru": "Вескария получает из Остры около 85 процентов своей пресной воды, а в сельском хозяйстве занята почти треть её работников. Нынешняя засуха уже привела к сокращению урожаев, а профсоюзы фермеров проводят протесты в столице.",
+   "back": "Vescaria receives about 85 per cent of its fresh water from the island, and agriculture employs almost one third of its workers; the current drought has already reduced crops and farmers &apos; unions are protesting in the capital.",
+   "chrf": 77.0
+  },
+  "corpora/aldoria/09-veskaria-profile:H2": {
+   "ru": "Энергетика",
+   "back": "Energy",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/09-veskaria-profile:P2": {
+   "ru": "Вескария импортирует около 30 процентов электроэнергии по высоким ценам и страдает от летних отключений электроэнергии. Наше посольство сообщает, что дешёвая электроэнергия была бы очень ценна для правительства Вескарии, возможно, даже ценнее денежных средств, которые в основном достались бы небольшой группе крупных землевладельцев.",
+   "back": "Vescaria imports about 30 per cent of the electricity at high prices and suffers from summer power cuts, and our embassy reports that cheap electricity would be very valuable to the Vescaria government, perhaps even more valuable than the money that would have been mostly allocated to a small group of large landowners.",
+   "chrf": 68.0
+  },
+  "corpora/aldoria/10-negotiation-history:T": {
+   "ru": "Прежние переговоры",
+   "back": "Previous negotiations",
+   "chrf": 59.0
+  },
+  "corpora/aldoria/10-negotiation-history:H1": {
+   "ru": "2019 и 2023 годы",
+   "back": "2019 and 2023",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/10-negotiation-history:P1": {
+   "ru": "Переговоры 2019 года сорвались, когда Вескария потребовала, чтобы Альдория признала договор 1929 года до обсуждения любых других вопросов. В 2023 году рамочный текст об обмене данными был почти согласован, но договорённость сорвалась из-за графика заполнения, и вескарийская делегация покинула переговоры.",
+   "back": "The 2019 negotiations collapsed when Vescaria demanded that Aldoria accept the 1929 Treaty before discussing any other issues. In 2023, the framework text on data exchange was almost agreed upon, but the agreement failed because of the completion schedule, and the delegation of the Republic of Hungary left the negotiations.",
+   "chrf": 54.6
+  },
+  "corpora/aldoria/10-negotiation-history:H2": {
+   "ru": "Уроки",
+   "back": "Lessons",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/10-negotiation-history:P2": {
+   "ru": "Вескарийские переговорщики плохо реагируют на нравоучения по поводу потерь воды и хорошо — на конкретные цифры. Ближе всего к соглашению подходили пакеты, связывающие несколько вопросов.",
+   "back": "The Vessarian negotiators are not responding well to the moral advice about water losses and well to specific figures, and the most close to the agreement was packages linking several questions.",
+   "chrf": 46.6
+  },
+  "corpora/aldoria/11-escalation-risks:T": {
+   "ru": "Риски в случае провала переговоров",
+   "back": "Risks of failure of negotiations",
+   "chrf": 26.9
+  },
+  "corpora/aldoria/11-escalation-risks:H1": {
+   "ru": "Торговля и суды",
+   "back": "Commerce and courts",
+   "chrf": 62.3
+  },
+  "corpora/aldoria/11-escalation-risks:P1": {
+   "ru": "Вескария закупает около 18 процентов альдорийского экспорта, в основном продовольствие и строительные материалы; замораживание торговли ударило бы по регионам, которые поддерживают правительство. Рассмотрение дела в Международном суде ООН заняло бы годы, но всё это время бросало бы тень на финансирование плотины и кредитный рейтинг Альдории.",
+   "back": "The Vescaria buys about 18 per cent of Aldorian exports, mainly food and construction materials; the freezing of trade would hit the regions that support the Government; it would take years before the UN International Court of Justice, but it would still cast a shadow over the financing of the dam and Aldoria's credit rating.",
+   "chrf": 71.8
+  },
+  "corpora/aldoria/11-escalation-risks:H2": {
+   "ru": "Финансирование",
+   "back": "Financing",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/11-escalation-risks:P2": {
+   "ru": "Без соглашения выплата второго транша Всемирного банка крайне маловероятна, а другие кредиторы последуют примеру банка.",
+   "back": "Without an agreement, the payment of the second tranche of the World Bank is highly unlikely, and other creditors will follow the example of the bank.",
+   "chrf": 55.9
+  },
+  "corpora/aldoria/12-filling-options:T": {
+   "ru": "Технические варианты заполнения водохранилища",
+   "back": "Technical options for filling the reservoir",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/12-filling-options:H1": {
+   "ru": "Быстрое заполнение с оговоркой о засухе",
+   "back": "Rapid filling with drought clause",
+   "chrf": 71.7
+  },
+  "corpora/aldoria/12-filling-options:P1": {
+   "ru": "Инженеры управления плотины утверждают, что трёхлетний срок заполнения совместим с высокими гарантированными попусками в засушливые годы, поскольку большую часть водохранилища можно заполнить в обычные и многоводные годы. Оговорка о засухе замедлила бы заполнение только в те годы, когда это важнее всего для Вескарии.",
+   "back": "The dam managers argue that a three-year filling period is compatible with high guaranteed intakes in dry years, as most of the reservoir can be filled in regular and multi-water years, and a drought clause would slow down filling only in years when it is most important for Vescaria.",
+   "chrf": 60.3
+  },
+  "corpora/aldoria/12-filling-options:H2": {
+   "ru": "Медленное заполнение",
+   "back": "Slow filling",
+   "chrf": 100.0
+  },
+  "corpora/aldoria/12-filling-options:P2": {
+   "ru": "Пятнадцатилетний срок заполнения оставил бы турбины недогруженными на протяжении большей части следующего десятилетия и сделал бы невозможным обслуживание облигаций без новых заимствований.",
+   "back": "A 15-year term of completion would leave turbines unladen for most of the next decade and would make it impossible to service bonds without new borrowings.",
+   "chrf": 58.6
+  },
+  "corpora/veskaria/01-water-dependence:T": {
+   "ru": "Зависимость Вескарии от Остры",
+   "back": "Vescaria's Dependence on the Island",
+   "chrf": 58.6
+  },
+  "corpora/veskaria/01-water-dependence:H1": {
+   "ru": "Вода",
+   "back": "Water",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/01-water-dependence:P1": {
+   "ru": "Остра обеспечивает около 85 процентов пресной воды Вескарии. В нижнем течении реки живут двадцать три миллиона человек, и почти треть рабочей силы зависит от орошаемого земледелия.",
+   "back": "The island provides about 85 per cent of Vescaria &apos; s freshwater, with 23 million people living in the lower river, and almost one third of the labour force depends on irrigated agriculture.",
+   "chrf": 60.1
+  },
+  "corpora/veskaria/01-water-dependence:H2": {
+   "ru": "Засуха",
+   "back": "Drought",
+   "chrf": 47.3
+  },
+  "corpora/veskaria/01-water-dependence:P2": {
+   "ru": "Это уже третий засушливый год подряд. Урожаи пшеницы и хлопка сократились на четверть, водохранилища на юге заполнены менее чем на 20 процентов, а профсоюзы фермеров ежедневно проводят протесты в столице.",
+   "back": "This is the third dry year in a row: wheat and cotton crops have declined by a quarter, reservoirs in the south have been filled by less than 20 per cent, and farmers &apos; unions have been holding daily protests in the capital.",
+   "chrf": 63.2
+  },
+  "corpora/veskaria/02-hydrology-study:T": {
+   "ru": "Управление водных ресурсов Вескарии: потребности в засушливые годы",
+   "back": "Vescaria Water Management: requirements for dry years",
+   "chrf": 39.6
+  },
+  "corpora/veskaria/02-hydrology-study:H1": {
+   "ru": "Минимально необходимый сток",
+   "back": "Minimum required flow",
+   "chrf": 53.3
+  },
+  "corpora/veskaria/02-hydrology-study:P1": {
+   "ru": "Управление водных ресурсов рассчитало, что в засушливый год Вескарии необходимо не менее 40 млрд кубических метров воды из Остры, чтобы защитить питьевое водоснабжение и основные районы орошения. При объёме менее 35 млрд потери урожая превысили бы один миллиард долларов США, а в некоторых городах пришлось бы ввести нормированную подачу воды.",
+   "back": "The Water Authority estimated that at least 40 billion cubic metres of water from the island would be needed in the dry year of Vescaria to protect drinking water and the main areas of irrigation, with less than 35 billion crop losses exceeding one billion United States dollars, and some cities would have to introduce a regular supply of water.",
+   "chrf": 61.2
+  },
+  "corpora/veskaria/02-hydrology-study:H2": {
+   "ru": "Скорость заполнения",
+   "back": "Speed of filling",
+   "chrf": 48.1
+  },
+  "corpora/veskaria/02-hydrology-study:P2": {
+   "ru": "Важнее всего то, сколько воды гарантировано в засушливые годы. Если будут гарантированы высокие попуски в засушливые годы, более быстрый график заполнения в обычные и многоводные годы нанесёт гораздо меньший ущерб. Управление считает гарантированный попуск в засушливые годы гораздо более важным, чем продолжительность срока заполнения.",
+   "back": "The most important thing is how much water is guaranteed in dry years. If high intakes are guaranteed in dry years, faster filling times in regular and multi-water years will cause much less damage. The Office considers the guaranteed intake in dry years to be much more important than the duration of the filling period.",
+   "chrf": 55.2
+  },
+  "corpora/veskaria/03-energy-deficit:T": {
+   "ru": "Энергодефицит Вескарии",
+   "back": "Vescaria Energy",
+   "chrf": 26.6
+  },
+  "corpora/veskaria/03-energy-deficit:H1": {
+   "ru": "Импорт и отключения",
+   "back": "Import and deactivation",
+   "chrf": 29.6
+  },
+  "corpora/veskaria/03-energy-deficit:P1": {
+   "ru": "Вескария импортирует около 30 процентов электроэнергии по высоким ценам и каждое лето страдает от веерных отключений, когда ирригационные насосы и кондиционеры доводят спрос до пика.",
+   "back": "Vescaria imports about 30 per cent of electricity at high prices, and each summer suffers from fan shut-downs when irrigation pumps and air conditioners bring demand to peak.",
+   "chrf": 66.6
+  },
+  "corpora/veskaria/03-energy-deficit:H2": {
+   "ru": "Ценность льготной электроэнергии",
+   "back": "Value of concessional electricity",
+   "chrf": 28.6
+  },
+  "corpora/veskaria/03-energy-deficit:P2": {
+   "ru": "По оценке Министерства энергетики, покупка 40 процентов выработки плотины по льготной цене сэкономила бы Вескарии около 600 млн долларов США в год и положила бы конец летним отключениям. В частных беседах чиновники говорят, что для страны это было бы ценнее любой денежной компенсации, которую может себе позволить Альдория.",
+   "back": "According to the Ministry of Energy, buying 40 per cent of the dam production at a concessional price would save Vescaria about $600 million a year and put an end to summer outages. In private conversations, officials say that it would be more valuable for the country than any monetary compensation Aldoria can afford.",
+   "chrf": 59.8
+  },
+  "corpora/veskaria/04-farmers-compensation:T": {
+   "ru": "Компенсация фермерам",
+   "back": "Compensation to farmers",
+   "chrf": 72.3
+  },
+  "corpora/veskaria/04-farmers-compensation:H1": {
+   "ru": "Требования общественности",
+   "back": "Public requirements",
+   "chrf": 34.9
+  },
+  "corpora/veskaria/04-farmers-compensation:P1": {
+   "ru": "Профсоюзы фермеров требуют создать компенсационный фонд в размере 1 млрд долларов США для возмещения потерь от засухи, и оппозиционные партии поддержали это требование.",
+   "back": "Farmers &apos; unions are demanding a $1 billion compensation fund to compensate for drought losses, and opposition parties have supported this claim.",
+   "chrf": 65.4
+  },
+  "corpora/veskaria/04-farmers-compensation:H2": {
+   "ru": "Экономическая реальность",
+   "back": "Economic reality",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/04-farmers-compensation:P2": {
+   "ru": "Экономисты министерства отмечают, что большая часть любого денежного фонда досталась бы небольшому числу крупных хозяйств и что даже 1 млрд долларов США покрыл бы лишь малую часть потерь одного неурожайного года. Гарантии по воде и дешёвая электроэнергия для ирригационных насосов помогли бы гораздо большему числу фермеров. Фонд имеет символическое политическое значение, но скромный фонд или его отсутствие можно защитить, если условия по воде и энергии будут хорошими.",
+   "back": "The Ministry's economists point out that most of any cash fund would be allocated to a small number of large farms and that even $1 billion would cover only a small part of the loss of one crop year; water guarantees and cheap electricity for irrigation pumps would help a much larger number of farmers; the fund is symbolically political, but a modest fund or its absence can be protected if the water and energy conditions are good.",
+   "chrf": 69.1
+  },
+  "corpora/veskaria/05-legal-position:T": {
+   "ru": "Правовая позиция",
+   "back": "Legal position",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/05-legal-position:H1": {
+   "ru": "Непричинение значительного ущерба",
+   "back": "No significant damage",
+   "chrf": 72.0
+  },
+  "corpora/veskaria/05-legal-position:P1": {
+   "ru": "Юристы Вескарии опираются на закреплённое в Конвенции ООН по водотокам обязательство не наносить значительного ущерба другим странам, по территории которых протекает общая река. Быстрое заполнение водохранилища во время засухи нанесло бы именно такой ущерб.",
+   "back": "The lawyers of the Vescaria rely on the UN Watercourses Convention &apos; s obligation not to cause significant harm to other countries on whose territory a common river runs, and the rapid filling of the reservoir during the drought would cause such damage.",
+   "chrf": 66.1
+  },
+  "corpora/veskaria/05-legal-position:H2": {
+   "ru": "Исторические права",
+   "back": "Historical rights",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/05-legal-position:P2": {
+   "ru": "Вескария также утверждает, что многовековое использование Остры породило у неё приобретённые права, подтверждённые договором 1929 года. Альдория отвергает этот договор, однако международные суды при распределении водных ресурсов рек придавали значение давно сложившимся видам водопользования.",
+   "back": "The Vescaria also claims that the Ostra's centuries-old use has given her acquired rights, as confirmed by the 1929 treaty, and Aldoria rejects this treaty, but international courts have given importance to long-standing water uses in the distribution of river resources.",
+   "chrf": 65.3
+  },
+  "corpora/veskaria/06-treaty-1929:T": {
+   "ru": "Договор 1929 года и совместное заявление",
+   "back": "1929 Treaty and Joint Statement",
+   "chrf": 48.3
+  },
+  "corpora/veskaria/06-treaty-1929:H1": {
+   "ru": "История",
+   "back": "History",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/06-treaty-1929:P1": {
+   "ru": "Договор 1929 года закрепил за Вескарией большую часть стока Остры и предоставил ей право вето на строительство выше по течению. Вескарийцы видят в нём правовую основу своей водной безопасности; Альдория называет его колониальным пережитком.",
+   "back": "The 1929 Treaty enshrined most of the Ostres flow in Vescaria and gave it the right of veto to build upstream; the Veskarians see it as the legal basis for their water security; Aldoria calls it a colonial remnants.",
+   "chrf": 70.2
+  },
+  "corpora/veskaria/06-treaty-1929:H2": {
+   "ru": "Формулировка совместного заявления",
+   "back": "Formulation of the joint statement",
+   "chrf": 70.9
+  },
+  "corpora/veskaria/06-treaty-1929:P2": {
+   "ru": "Общественное мнение ждёт заявления, которое «признаёт исторические права Вескарии». Формулировка «констатирует историческое водопользование Вескарии» была бы приемлемым запасным вариантом, который правительство могло бы представить как признание. Формулировка «принимает к сведению позиции обеих сторон» слаба, а формулировка, которая «подтверждает принцип справедливого и разумного использования», была бы воспринята внутри страны как капитуляция перед правовой концепцией Альдории.",
+   "back": "Public opinion is awaiting a statement that \"recognizes the historical rights of the Vescaria.\" The phrase \"confirms the historical water use of the Vescaria\" would be an acceptable substitute option that the Government could present as recognition. The phrase \"takes note of the positions of both sides\" is weak, and the language that \"confirms the principle of equitable and reasonable utilization\" would be understood domestically as a surrender to the legal concept of Aldoria.",
+   "chrf": 66.9
+  },
+  "corpora/veskaria/07-monitoring:T": {
+   "ru": "Мониторинг и обмен данными",
+   "back": "Monitoring and data exchange",
+   "chrf": 70.8
+  },
+  "corpora/veskaria/07-monitoring:H1": {
+   "ru": "Что нужно Вескарии",
+   "back": "What the Vescaria Need",
+   "chrf": 32.4
+  },
+  "corpora/veskaria/07-monitoring:P1": {
+   "ru": "Вескарийским инженерам нужна надёжная информация о попусках и уровне воды в водохранилище в режиме реального времени, а также право проверять её на месте. Совместная техническая комиссия с равным представительством и общим доступом к данным о стоке дала бы им именно это.",
+   "back": "Weskarian engineers need reliable information on water intakes and water levels in the reservoir in real time, as well as the right to check it in situ. A joint technical commission with equal representation and general access to data on runoff would give them that.",
+   "chrf": 67.7
+  },
+  "corpora/veskaria/07-monitoring:H2": {
+   "ru": "Международные наблюдатели",
+   "back": "International observers",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/07-monitoring:P2": {
+   "ru": "Некоторые политики требуют также присутствия международных наблюдателей. Управление водных ресурсов предупреждает, что наблюдатели замедлили бы принятие решений в чрезвычайных ситуациях и что Альдория их наверняка отвергнет; оно предпочитает совместную техническую комиссию. Одни лишь ежегодные отчёты в условиях засухи были бы почти бесполезны.",
+   "back": "Some policies also require the presence of international observers: the Water Authority warns that observers would slow down decision-making in emergencies and that Aldoria would surely reject them; it prefers a joint technical commission; only annual reports in drought would be almost useless.",
+   "chrf": 71.4
+  },
+  "corpora/veskaria/08-domestic-politics:T": {
+   "ru": "Внутренняя политика",
+   "back": "Domestic policy",
+   "chrf": 74.2
+  },
+  "corpora/veskaria/08-domestic-politics:H1": {
+   "ru": "Давление на правительство",
+   "back": "Pressure on the Government",
+   "chrf": 82.1
+  },
+  "corpora/veskaria/08-domestic-politics:P1": {
+   "ru": "Парламент объявил плотину экзистенциальной угрозой, а премьер-министр пообещал, что в засушливые годы Вескария «не потеряет ни одной капли». Выборы должны состояться в течение шести месяцев, и оппозиция обвиняет правительство в слабости.",
+   "back": "Parliament has declared the dam an existential threat, and the Prime Minister has promised that, in the dry years of Vescaria, \"no drops will be lost.\" Elections are to be held within six months, and the opposition accuses the government of weakness.",
+   "chrf": 75.6
+  },
+  "corpora/veskaria/08-domestic-politics:H2": {
+   "ru": "Что нужно правительству",
+   "back": "What the Government Needs",
+   "chrf": 63.2
+  },
+  "corpora/veskaria/08-domestic-politics:P2": {
+   "ru": "Правительству нужно соглашение, которое можно представить как защиту воды Вескарии в засушливые годы и признание её исторической позиции. Прекращение летних отключений электроэнергии помогло бы завоевать симпатии городских избирателей.",
+   "back": "The government needs an agreement that can be seen as protecting the water of Vescaria in the dry years and recognizing its historical position.",
+   "chrf": 51.7
+  },
+  "corpora/veskaria/09-aldoria-profile:T": {
+   "ru": "Что нам известно об Альдории",
+   "back": "What do we know about Aldoria?",
+   "chrf": 84.7
+  },
+  "corpora/veskaria/09-aldoria-profile:H1": {
+   "ru": "Финансы",
+   "back": "Finance",
+   "chrf": 83.0
+  },
+  "corpora/veskaria/09-aldoria-profile:P1": {
+   "ru": "Альдория выполняет программу МВФ с жёсткими бюджетными ограничениями, а её парламент заблокировал новые расходы. Наши аналитики сомневаются, что Альдория в состоянии выплатить крупную денежную компенсацию.",
+   "back": "Aldoria is running an IMF program with severe budgetary constraints, and her parliament has blocked new spending, and our analysts doubt that Aldoria is able to pay large monetary compensation.",
+   "chrf": 67.6
+  },
+  "corpora/veskaria/09-aldoria-profile:H2": {
+   "ru": "Энергетика и финансирование",
+   "back": "Energy and finance",
+   "chrf": 82.6
+  },
+  "corpora/veskaria/09-aldoria-profile:P2": {
+   "ru": "После заполнения водохранилища плотина будет производить гораздо больше электроэнергии, чем может потребить Альдория, а Вескария — единственный крупный покупатель поблизости. По имеющимся сведениям, следующий транш Всемирного банка на плотину, около 1,1 млрд долларов США, зависит от согласованного с Вескарией механизма совместного мониторинга.",
+   "back": "Once the reservoir is filled, the dam will produce much more electricity than Aldoria can consume and Vescaria is the only major buyer nearby, and the next World Bank tranche on the dam, about $1.1 billion, is reported to depend on a joint monitoring mechanism agreed with Vescaria.",
+   "chrf": 64.2
+  },
+  "corpora/veskaria/10-negotiation-history:T": {
+   "ru": "Прежние переговоры",
+   "back": "Previous negotiations",
+   "chrf": 59.0
+  },
+  "corpora/veskaria/10-negotiation-history:H1": {
+   "ru": "2019 и 2023 годы",
+   "back": "2019 and 2023",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/10-negotiation-history:P1": {
+   "ru": "В 2019 году переговоры сорвались, когда Альдория отказалась обсуждать договор 1929 года. В 2023 году рамочный документ об обмене данными был почти согласован, но Альдория настаивала на заполнении водохранилища за три года независимо от засухи, и вескарийская делегация покинула переговоры.",
+   "back": "In 2019, negotiations broke when Aldoria refused to negotiate the 1929 Treaty, and in 2023, the framework document on data exchange was almost agreed upon, but Aldoria insisted on filling the reservoir in three years, regardless of the drought, and the delegation of Hungary left the negotiations.",
+   "chrf": 61.0
+  },
+  "corpora/veskaria/10-negotiation-history:H2": {
+   "ru": "Уроки",
+   "back": "Lessons",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/10-negotiation-history:P2": {
+   "ru": "Альдорийские переговорщики остро реагируют на любое оспаривание их суверенитета над плотиной, но проявляли гибкость в технических договорённостях и в торговле электроэнергией.",
+   "back": "The Aldoria negotiators responded strongly to any challenge to their sovereignty over the dam, but showed flexibility in technical arrangements and electricity trade.",
+   "chrf": 76.5
+  },
+  "corpora/veskaria/11-escalation-options:T": {
+   "ru": "Варианты действий в случае провала переговоров",
+   "back": "Options for failure of negotiations",
+   "chrf": 34.8
+  },
+  "corpora/veskaria/11-escalation-options:H1": {
+   "ru": "Суд и торговля",
+   "back": "Court and trade",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/11-escalation-options:P1": {
+   "ru": "Вескария может передать дело в Международный суд ООН и заморозить двустороннюю торговлю; Вескария закупает около 18 процентов альдорийского экспорта. Судебное разбирательство заняло бы от трёх до пяти лет, и за это время водохранилище всё равно было бы заполнено.",
+   "back": "The Vescaria can refer the case to the United Nations International Court of Justice and freeze bilateral trade; the Vescaria buys about 18 per cent of Aldorian exports; the trial would take three to five years, and the reservoir would still be filled.",
+   "chrf": 68.0
+  },
+  "corpora/veskaria/11-escalation-options:H2": {
+   "ru": "Дипломатия",
+   "back": "Diplomacy",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/11-escalation-options:P2": {
+   "ru": "Вескария могла бы также попросить региональную организацию и Всемирный банк оказать давление на Альдорию. Ни один из этих вариантов не принёс бы воды во время нынешней засухи.",
+   "back": "The Vescaria could also ask the regional organization and the World Bank to put pressure on Aldoria, none of which would have brought water during the current drought.",
+   "chrf": 79.4
+  },
+  "corpora/veskaria/12-economy:T": {
+   "ru": "Экономическая справка",
+   "back": "Economic background",
+   "chrf": 100.0
+  },
+  "corpora/veskaria/12-economy:H1": {
+   "ru": "Сельское хозяйство и водопользование",
+   "back": "Agriculture and water management",
+   "chrf": 79.5
+  },
+  "corpora/veskaria/12-economy:P1": {
+   "ru": "Сельское хозяйство обеспечивает около 18 процентов ВВП Вескарии. Альдория утверждает, что Вескария впустую теряет 30 процентов воды в старых каналах; национальная программа модернизации уже начала облицовку каналов, но на неё потребуется десять лет и внешнее финансирование.",
+   "back": "Agriculture accounts for about 18 per cent of Vescaria's GDP, and Aldoria claims that Vescaria loses 30 per cent of the water in the old canals; the national modernization programme has already begun to cover the canals, but it will take 10 years and external funding.",
+   "chrf": 63.4
+  },
+  "corpora/veskaria/12-economy:H2": {
+   "ru": "Цены на электроэнергию",
+   "back": "Electricity prices",
+   "chrf": 45.1
+  },
+  "corpora/veskaria/12-economy:P2": {
+   "ru": "Из-за импорта цены на электроэнергию для вескарийской промышленности — одни из самых высоких в регионе. Дешёвая и надёжная электроэнергия сделала бы экономически доступными ирригационные насосы и планируемые заводы по производству удобрений.",
+   "back": "Because of imports, electricity prices for the Hungarian industry are among the highest in the region, and cheap and reliable electricity would make irrigation pumps and planned fertilizer plants economically available.",
+   "chrf": 75.1
+  }
+ }
+}

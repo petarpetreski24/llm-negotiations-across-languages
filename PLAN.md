@@ -1,6 +1,6 @@
 # Lost in Translation? Working plan (v3: open models on FINKI GPUs)
 
-Draft for team review. Last updated Thu 26 Nov 2026. Paper due **Mon 21 Dec 2026** (MIPRO 2027, AIS track).
+Draft for team review. Last updated Fri 27 Nov 2026. Paper due **Mon 21 Dec 2026** (MIPRO 2027, AIS track).
 
 > **Status of the model choices: PROPOSED, NOT CONFIRMED.** They wait on two things: FINKI's answer to the GPU request ([docs/requests/finki-gpu-request.md](docs/requests/finki-gpu-request.md)) and the pilot on 3–4 Dec. Everything marked *(proposed)* below may still change. The $20 cloud-API plan (v2) is kept only as a fallback (§12).
 
@@ -238,12 +238,19 @@ From `planning/compute_model.py`:
 
 ## 14. Testing and validation
 
-- **Software (in place):** 107 pytest tests, covering:
+- **Software (in place):** 171 pytest tests, covering:
   - scoring, Pareto and Nash; protocol rules, including the confirmation turn
   - translation routing per cell; agent validation and retries
   - end-to-end negotiations for all 12 cells x 2 pairings with fake models
   - illusory agreement from a corrupting translator; deals below BATNA
   - the vLLM/Ollama client against a mock server; response cache; runner resume and crash reporting
+  - English and Russian prompts for every role, persona and dialogue language; the Russian materials' checks and the review spreadsheet
+- **Russian materials (drafted 27 Nov):**
+  - written from the approved English, with the same structure, so each Russian segment pairs with its source;
+  - automatic checks on every segment: numbers, template code, fixed glossary terms, leftover English, no mention of translation;
+  - tests that the rendered English and Russian instructions carry the same numbers, headings and bullet points;
+  - machine back-translation with Opus-MT, a system the study does not use, to point the reviewer at meaning shifts;
+  - then the native-speaker review through a spreadsheet ([docs/russian-review/](docs/russian-review/README.md)).
 - **Before the pilot:** one real smoke run per cell on the FINKI servers.
 - **Experimental validity:**
   - the A/A test (C1 with an identity translator must match A1)
@@ -309,6 +316,7 @@ If we are behind on Thu 10 Dec, cut in this order:
 - vLLM structured outputs and prefix caching; FP8 weight-only on A100 through Marlin kernels.
 - Llama 4 does not list Russian.
 - Scenario properties (scripts and tests).
+- The Russian drafts pass all automatic checks (27 Nov); the native-speaker review is still to come.
 
 **Not yet verified:**
 - The Russian quality of Qwen3.8-27B, Gemma 4 and TranslateGemma (their cards don't name Russian).

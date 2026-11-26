@@ -96,3 +96,9 @@ def test_pareto_distance(sc):
 def test_invalid_deals_rejected(sc, bad):
     with pytest.raises(ValueError):
         sc.utility("aldoria", bad)
+
+
+def test_role_names_have_a_russian_genitive(sc):
+    assert sc.roles["aldoria"].name_gen["ru"] == "Республики Альдория"
+    assert sc.roles["veskaria"].name_gen["ru"] == "Республики Вескария"
+    assert sc.roles["aldoria"].name_gen["en"] == sc.roles["aldoria"].name["en"]  # English needs no other form

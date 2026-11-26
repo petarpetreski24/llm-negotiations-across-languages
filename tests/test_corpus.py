@@ -50,3 +50,16 @@ def test_malformed_document_rejected(tmp_path):
     (d / "01-x.md").write_text("no headings here\n", encoding="utf-8")
     with pytest.raises(ValueError):
         load_corpus(tmp_path, "aldoria", "en")
+
+
+@pytest.mark.parametrize("role", ["aldoria", "veskaria"])
+def test_russian_corpus_mirrors_english(role):
+    from negmt import langcheck
+
+    assert check_parallel(CORPORA, role) == []
+    en, ru = load_corpus(CORPORA, role, "en"), load_corpus(CORPORA, role, "ru")
+    assert [c.id for c in en] == [c.id for c in ru]
+    for c in ru:
+        assert 10 <= len(c.text.split()) <= 120, c.id
+        assert not re.search(r"балл", c.text, re.I), c.id
+        assert langcheck.detect(c.as_excerpt()) == "ru", c.id

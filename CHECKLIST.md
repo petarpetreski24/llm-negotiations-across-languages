@@ -57,6 +57,7 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 - [x] Role situation briefs (EN) in `configs/roles/`
 - [x] Briefing books: 12 documents per country (EN, ~2,300 words, 46 chunks with IDs like `aldoria/07-world-bank#c2`); `corpus.py` loader and EN/RU alignment check
 - [x] Tests: 92 passing (prompts for every role × persona × dialogue language, no leak of the other side's scores, briefings never state points, chunking)
+- [x] Fixes found while translating (27 Nov): two English lines lacked "the" before "Republic of …"; the score table now names each issue's JSON key (`key "filling"`) in both languages, so an agent cannot mix up which number belongs to which issue
 - [ ] **(you)** Team review of materials: [configs/roles](configs/roles), [configs/personas](configs/personas), [configs/corpora](configs/corpora), [configs/prompts/system.en.j2](configs/prompts/system.en.j2)
 
 ## 5. Build: step 4, model clients (started 26 Nov)
@@ -78,15 +79,21 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 - [ ] `translation/nllb.py` + `infra/mt_service.py` (sentence splitting, language codes)
 - [ ] `translation/openai_mt.py` for Hy-MT2-7B (model card prompt format)
 - [ ] Back-translation client for TranslateGemma 27B (check its structured prompt through vLLM)
-- [ ] Number-preservation check
-- [ ] NLLB tested on laptop CPU (distilled-600M)
+- [~] Number-preservation check: `textcheck.numbers()` handles English and Russian number formats (27 Nov); still to wire into the channel
+- [ ] NLLB tested on laptop CPU (distilled-600M); PyTorch CPU and transformers are installed in `.venv` (27 Nov)
 
 ## 8. Russian materials (Sat 28 Nov – Wed 2 Dec)
 
 - [x] Reviewer guide: what to check, glossary, the five statement formulas ([docs/russian-review/README.md](docs/russian-review/README.md))
-- [ ] Two independent drafts of all RU prompts, personas, briefs, briefing documents
-- [ ] Diff of the two drafts to flag disagreements; side-by-side review spreadsheet
+- [x] Russian drafts (27 Nov): instructions, turn and retry messages, error messages, personas, country briefs, 24 briefing documents, labels (205 segments, ~3,400 words)
+- [x] ~~Two independent drafts + diff~~ replaced by a stronger check: a second draft from the same assistant is not independent, and a generic MT draft differs in wording everywhere, so a diff would flag every row. Instead:
+  - automatic checks on every segment (numbers, template code, glossary, leftover English, no mention of translation, structure): all pass
+  - machine back-translation with Opus-MT, a system the study does not use: median chrF 66; 3 longer rows flagged for a closer look; it also exposed 5 ambiguous phrasings, now fixed
+- [x] Code for Russian: plural endings after numbers, genitive country names, retry messages worded in the instruction language (`errors.py`, `configs/prompts/errors.yaml`)
+- [x] Review spreadsheet [docs/russian-review/review-sheet.xlsx](docs/russian-review/review-sheet.xlsx): flags, translator's notes, glossary, example prompt; `python -m negmt.review apply` writes corrections back
+- [ ] **(you)** Send the guide and the spreadsheet to the reviewer
 - [ ] **(you)** Reviewer's corrections by Wed 2 Dec
+- [ ] Apply the corrections, re-run the checks, update the glossary
 
 ## 9. FINKI setup (Mon 30 Nov – Wed 2 Dec)
 

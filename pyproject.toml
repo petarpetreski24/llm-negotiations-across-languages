@@ -16,6 +16,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# Russian materials review: spreadsheet export/import (python -m negmt.review)
+review = ["openpyxl>=3.1"]
+# local CPU translation (review back-translation; NLLB smoke test). Install PyTorch first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+localmt = ["transformers>=4.40,<5", "sentencepiece>=0.2", "sacremoses>=0.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

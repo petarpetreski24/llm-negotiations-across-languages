@@ -1,0 +1,12 @@
+# Pilot (3-4 Dec): ~10 runs per key cell to calibrate BATNAs and check models.
+id: pilot
+model: qwen3.8-27b
+reps: 10
+cells: [A1, A2, B1, B2, B3, C1]
+persona_pairings: [P2]
+max_rounds: 10
+temperature: 0.7
+mt_systems: {MT1: nllb-200-3.3b, MT2: hy-mt2-7b}
+concurrency: 32
+log_dir: logs/pilot
+cache_dir: cache

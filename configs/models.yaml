@@ -1,0 +1,32 @@
+# Model endpoints. PROPOSED FINKI-only line-up, pending confirmation (see docs/requests/finki-gpu-request.md).
+# base_url_env names an environment variable (set in .env or the SLURM job); base_url is the fallback.
+models:
+  qwen3.8-27b:
+    kind: openai_compat
+    served_name: Qwen/Qwen3.8-27B
+    base_url_env: NEGOTIATOR_BASE_URL
+    base_url: http://localhost:8000/v1
+    # model card's non-thinking settings; thinking switched off
+    sampling: {top_p: 0.8, top_k: 20, min_p: 0.0, presence_penalty: 1.5}
+    extra_body: {chat_template_kwargs: {enable_thinking: false}}
+    max_tokens: 1024
+
+  gemma-4-31b:
+    kind: openai_compat
+    served_name: google/gemma-4-31B-it
+    base_url_env: NEGOTIATOR2_BASE_URL
+    base_url: http://localhost:8001/v1
+    extra_body: {chat_template_kwargs: {enable_thinking: false}}
+    max_tokens: 1024
+
+  # CIIT-style local serving through Ollama also works (OpenAI-compatible endpoint):
+  ollama-qwen3-32b:
+    kind: openai_compat
+    served_name: qwen3:32b
+    base_url: http://localhost:11434/v1
+    max_tokens: 1024
+
+translators:
+  identity: {kind: identity}
+  nllb-200-3.3b: {kind: nllb_service, base_url_env: NLLB_BASE_URL, base_url: http://localhost:8003}
+  hy-mt2-7b: {kind: openai_mt, served_name: tencent/Hy-MT2-7B, base_url_env: MT2_BASE_URL, base_url: http://localhost:8002/v1}

@@ -15,10 +15,13 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 
 ## 1. Blockers to clear by Mon 30 Nov
 
+- [x] FINKI-only model line-up researched (26 Nov); request drafted in [docs/requests/finki-gpu-request.md](docs/requests/finki-gpu-request.md)
+- [ ] **(you)** Send Part A of the request to the OSC lab (with supervisor) and Part B to the CIIT co-authors
+- [ ] **(you)** Confirm the FINKI-only line-up → then PLAN.md / ARCHITECTURE.md are updated (Claude, Anthropic budget items dropped)
 - [ ] **(you)** FINKI OSC lab: is the CIIT account active? Job limits, outbound internet on GPU nodes, vLLM allowed?
 - [ ] **(you)** Share the CIIT framework code
 - [ ] **(you)** Find a Russian validator (~10 h)
-- [ ] **(you)** Anthropic account with $20 prepaid credits, auto-reload off; API key in local `.env`
+- [ ] ~~Anthropic account with $20 credits~~ not needed if the FINKI-only line-up is confirmed
 - [ ] **(you)** Hugging Face account; accept licences for gated models (CometKiwi, Gemma/TranslateGemma)
 - [ ] **(you)** Author list; Overleaf or local LaTeX
 
@@ -56,12 +59,13 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 - [x] Tests: 92 passing (prompts for every role × persona × dialogue language, no leak of the other side's scores, briefings never state points, chunking)
 - [ ] **(you)** Team review of materials: [configs/roles](configs/roles), [configs/personas](configs/personas), [configs/corpora](configs/corpora), [configs/prompts/system.en.j2](configs/prompts/system.en.j2)
 
-## 5. Build: step 4, model clients (Sat 28 – Sun 29 Nov)
+## 5. Build: step 4, model clients (started 26 Nov)
 
-- [ ] `llm/openai_compat.py` (vLLM / Ollama), JSON schema output, thinking off, seeds
-- [ ] `llm/anthropic_client.py` (Claude Haiku/Sonnet), structured outputs, Batch API
-- [ ] `budget.py` envelopes ($8 reserved for analysis) and `cache.py`
-- [ ] One real Haiku negotiation (a few cents)
+- [x] `llm/openai_compat.py` for vLLM / Ollama: JSON-schema output, model-specific switches (thinking off), seeds, retries with backoff, `<think>` stripping
+- [x] `cache.py`: content-addressed response cache (`CachedLLM`), keyed by model, prompts, schema, seed, temperature
+- [x] `configs/models.yaml`: proposed FINKI models (pending confirmation), plus an Ollama entry like CIIT
+- [ ] ~~`llm/anthropic_client.py` and `budget.py` envelopes~~ dropped if the FINKI-only line-up is confirmed
+- [ ] One real negotiation against a vLLM/Ollama server (needs FINKI access)
 
 ## 6. Build: step 5, retrieval (Sun 29 Nov)
 
@@ -91,8 +95,9 @@ Deadline: **Mon 21 Dec 2026** (MIPRO 2027, AIS track). Target submission: Sun 20
 
 ## 10. Runner (Tue 1 Dec)
 
-- [ ] Grid expansion, ~32 concurrent negotiations, resume after crash
-- [ ] Test: 50 fake runs in parallel, kill and resume
+- [x] `runner.py`: experiment YAML → grid (960 runs for the full design), ~32 concurrent negotiations, resume by skipping logged runs, crashes reported without logs, `--dry-run` CLI
+- [x] `configs/experiments/pilot.yaml` (90 runs) and `aa-test.yaml` (C1 with identity translator)
+- [x] Tests: 48 fake runs in parallel, lose 5 logs and resume, crash reporting; 103 tests passing in total
 
 ## 11. Pilot and freeze (Thu 3 – Fri 4 Dec)
 

@@ -1,0 +1,13 @@
+# A/A check: cell C1 (English-English round trip) with the identity translator, so the channel is
+# present but changes nothing. Outcomes must match plain A1 from the pilot.
+id: aa-test
+model: qwen3.8-27b
+reps: 10
+cells: [C1]
+persona_pairings: [P2]
+max_rounds: 10
+temperature: 0.7
+mt_systems: {MT1: identity, MT2: identity}
+concurrency: 32
+log_dir: logs/aa-test
+cache_dir: cache
